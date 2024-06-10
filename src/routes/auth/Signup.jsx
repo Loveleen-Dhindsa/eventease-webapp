@@ -1,9 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { signupApi } from '../../services/api.service';
-import { Button, Form, Input } from 'antd';
-import { Link } from 'react-router-dom';
+import { Button, Form, Input, Alert } from 'antd';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function Signup() {
+    const [message, setMessage] = useState(null);
+    const navigate = useNavigate();
 
     const handleSubmit = (values) => {
         signupApi({
@@ -13,10 +15,17 @@ export default function Signup() {
             phone: values.phone
         })
             .then(({ data: result }) => {
-                localStorage.setItem('eventease_token', result);
-                console.log('result', result);
+                const user = result;
+                console.log('result=====', user);
+
+                if (user) {
+                    localStorage.setItem('eventease_token', user.token)
+                    navigate('/');
+                }
+                setMessage({ type: 'success', content: 'Signup successful!' });
             }).catch((error) => {
                 console.log('error', error)
+                setMessage({ type: 'error', content: 'Email address is already registered with us.' });
             });
     };
     return (
@@ -29,6 +38,14 @@ export default function Signup() {
                                 <Form layout="vertical" onFinish={handleSubmit}>
                                     <h3>Create a new Account</h3>
                                     <hr />
+                                    {message && (
+                                        <Alert
+                                            message={message.content}
+                                            type={message.type}
+                                            showIcon
+                                            className="mb-3"
+                                        />
+                                    )}
                                     <Form.Item
                                         name={'name'}
                                         label="Name"
@@ -47,10 +64,8 @@ export default function Signup() {
                                         name={'email'}
                                         label="Email"
                                         rules={[
-                                            {
-                                                required: true,
-                                                message: 'Please input your email!',
-                                            },
+                                            { required: true, message: 'Please input your email!' },
+                                            { type: 'email', message: 'Please enter a valid email address.' },
                                         ]}
                                         required={false}
                                     >
@@ -62,13 +77,22 @@ export default function Signup() {
                                         label="Password"
                                         required={false}
                                         rules={[
-                                            {
-                                                required: true,
-                                                message: 'Please input your password!',
-                                            },
+                                            { required: true, message: 'Please input your password!' },
+                                            { min: 6, message: 'Password must be at least 6 characters' },
                                         ]}
                                     >
                                         <Input.Password placeholder="*******" type="password" />
+                                    </Form.Item>
+                                    <Form.Item
+                                        name={'phone'}
+                                        label="Phone"
+                                        required={false}
+                                        rules={[
+                                            { required: true, message: 'Please input your phone number!' },
+                                            { pattern: /^[0-9]{10}$/, message: 'Please enter a valid 10-digit phone number.' },
+                                        ]}
+                                    >
+                                        <Input placeholder="1234567890" autoComplete="off" />
                                     </Form.Item>
 
                                     <Button className="btn-primary w-100 p-3" type="submit" htmlType='submit'>Create Account</Button>

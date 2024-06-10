@@ -1,21 +1,29 @@
-import React from 'react'
-import { loginApi } from '../../services/api.service';
-import { Button, Form, Input } from 'antd';
-import { Link } from 'react-router-dom';
-import { setAccessToken } from '../../services/localstorage';
-
+import React, { useState } from 'react'
+import { loginApi, signupApi } from '../../services/api.service';
+import { Button, Form, Input, Alert } from 'antd';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function Login() {
+    const [message, setMessage] = useState(null);
+    const navigate = useNavigate();
 
     const handleSubmit = (values) => {
         loginApi({
             email: values.email,
             password: values.password,
         })
-            .then(({ data }) => {
-                setAccessToken(data.token);
+            .then((response) => {
+                console.log('Response:', response);
+                const user = response;
+                if (user) {
+                    localStorage.setItem('eventease_token', user.token);
+                    navigate('/');
+                }
+                setMessage({ type: 'success', content: 'Login successful!' });
+
             }).catch((error) => {
                 console.log('error', error)
+                setMessage({ type: 'error', content: 'Email address is already registered with us.' });
             });
     };
     return (
@@ -28,28 +36,20 @@ export default function Login() {
                                 <Form layout="vertical" onFinish={handleSubmit}>
                                     <h3>Create a new Account</h3>
                                     <hr />
-                                    <Form.Item
-                                        name={'name'}
-                                        label="Name"
-                                        rules={[
-                                            {
-                                                required: true,
-                                                message: 'Please input your name!',
-                                            },
-                                        ]}
-                                        required={false}
-                                    >
-                                        <Input placeholder="Tony Stark" autoComplete='off' />
-                                    </Form.Item>
-
+                                    {message && (
+                                        <Alert
+                                            message={message.content}
+                                            type={message.type}
+                                            showIcon
+                                            className="mb-3"
+                                        />
+                                    )}
                                     <Form.Item
                                         name={'email'}
                                         label="Email"
                                         rules={[
-                                            {
-                                                required: true,
-                                                message: 'Please input your email!',
-                                            },
+                                            { required: true, message: 'Please input your email!' },
+                                            { type: 'email', message: 'Please enter a valid email address.' },
                                         ]}
                                         required={false}
                                     >
@@ -61,19 +61,18 @@ export default function Login() {
                                         label="Password"
                                         required={false}
                                         rules={[
-                                            {
-                                                required: true,
-                                                message: 'Please input your password!',
-                                            },
+                                            { required: true, message: 'Please input your password!' },
+                                            { min: 6, message: 'Password must be at least 6 characters' },
                                         ]}
                                     >
                                         <Input.Password placeholder="*******" type="password" />
                                     </Form.Item>
 
+
                                     <Button className="btn-primary w-100 p-3" type="submit" htmlType='submit'>Create Account</Button>
                                 </Form>
                                 <p className="mt-4 account-link">
-                                    Already have an account? <Link className="text-decoration-none" to="/auth/login">Login</Link>
+                                    Don't have an account? <Link className="text-decoration-none" to="/auth/signup">Signup</Link>
                                 </p>
                             </div>
                         </div>
