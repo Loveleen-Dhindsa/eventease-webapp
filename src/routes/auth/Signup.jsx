@@ -1,25 +1,29 @@
 import React, { useState } from 'react'
-import { signupApi } from '../../services/api.service';
+import { signupApi, signupUser } from '../../services/api.service';
 import { Button, Form, Input, Alert } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
+import { setAccessToken, saveUserToLocalstorage } from '../../services/localstorage';
 
 export default function Signup() {
+    const [user, setUser] = useState(null);
+
     const [message, setMessage] = useState(null);
     const navigate = useNavigate();
 
     const handleSubmit = (values) => {
-        signupApi({
+        signupUser({
             name: values.name,
             email: values.email,
             password: values.password,
             phone: values.phone
         })
-            .then(({ data: result }) => {
-                const user = result;
-                console.log('result=====', user);
-
+            .then((response) => {
+                console.log('Response:', response);
+                const user = response;
                 if (user) {
-                    localStorage.setItem('eventease_token', user.token)
+                    setAccessToken(user.token);
+                    setUser(user);
+                    saveUserToLocalstorage(user);
                     navigate('/');
                 }
                 setMessage({ type: 'success', content: 'Signup successful!' });

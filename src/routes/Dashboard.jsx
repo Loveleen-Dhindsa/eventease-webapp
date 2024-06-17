@@ -15,6 +15,7 @@ export default function Dashboard() {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [isUpdateMode, setIsUpdateMode] = useState(false);
     const [currentUserId, setCurrentUserId] = useState(null);
+    const [form] = Form.useForm();
 
 
     useEffect(() => {
@@ -38,8 +39,10 @@ export default function Dashboard() {
         if (user) {
             setIsUpdateMode(true);
             setCurrentUserId(user._id);
+            form.setFieldsValue(user);
         } else {
             setIsUpdateMode(false);
+            form.resetFields();
         }
         setIsModalVisible(true);
     };
@@ -56,10 +59,11 @@ export default function Dashboard() {
                 name: values.name,
                 email: values.email,
                 password: values.password,
-                phone: values.phone
+                phone: values.phone,
+                role: values.role
             })
-                .then(({ data: result }) => {
-                    console.log('Updated user', result);
+                .then((res) => {
+                    console.log('res', res)
                     fetchUsers();
                     hideModal();
                 })
@@ -71,10 +75,12 @@ export default function Dashboard() {
                 name: values.name,
                 email: values.email,
                 password: values.password,
-                phone: values.phone
+                phone: values.phone,
+                role: values.role
+
             })
-                .then(({ data: result }) => {
-                    console.log('Created user:', result);
+                .then((res) => {
+                    console.log('Created user:', res);
                     fetchUsers();
                     hideModal();
                 }).catch((error) => {
@@ -100,18 +106,13 @@ export default function Dashboard() {
     return (
         <Container>
             <div className="dashboard-page-header p-3">
-                <div className="row mt-3">
-                    <div className="col-md-12">
-                        <h3 className="text-center">Dashboard Page</h3>
-                    </div>
-                </div>
                 <div className="row">
                     <div className="col-md-12">
                         {loading ? (
                             <p>Loading...</p>
                         ) : (
                             <div>
-                                <div className="row mb-3 mt-5">
+                                <div className="row mb-3">
                                     <div className="col-md-8">
                                         <h3>Total List of Users: {totalUsers}</h3>
                                     </div>
@@ -138,6 +139,8 @@ export default function Dashboard() {
                                             <Link to={`/users/${record._id}`}>{text}</Link>
                                         )}
                                     />
+                                    <Table.Column key={'role'} title={'Role'} dataIndex={'role'} />
+
                                     <Table.Column key={'email'} title={'Email'} dataIndex={'email'} />
                                     <Table.Column
                                         key={'createdAt'}
@@ -150,13 +153,12 @@ export default function Dashboard() {
                                         render={(text, record) => (
                                             <div>
                                                 <Popconfirm title="Are you sure you want to delete this user?" onConfirm={() => handleDeleteUser(record._id)}>
-                                                    <Button size='small'>
+                                                    <Button className="m-2" size='small'>
                                                         <TbTrash />
                                                     </Button>
                                                 </Popconfirm>
 
                                                 <Button icon={<TbEdit />} onClick={() => showModal(record)} />
-
                                             </div>
                                         )}
                                     />
@@ -171,7 +173,8 @@ export default function Dashboard() {
                                                 footer={false}
                                                 destroyOnClose={true}
                                             >
-                                                <Form layout="vertical" onFinish={handleCreateOrUpdateUser}>
+                                                <Form layout="vertical" form={form}
+                                                    onFinish={handleCreateOrUpdateUser}>
                                                     <hr />
 
                                                     <Form.Item
@@ -197,31 +200,35 @@ export default function Dashboard() {
                                                         ]}
                                                         required={false}
                                                     >
-                                                        <Input placeholder="tony@starkindustries.com" disabled={isUpdateMode} />
+                                                        <Input placeholder="abc@gmail.com" disabled={isUpdateMode} />
                                                     </Form.Item>
 
-                                                    <Form.Item
-                                                        name={'password'}
-                                                        label="Password"
-                                                        required={false}
-                                                        rules={[
-                                                            { required: true, message: 'Please input your password!' },
-                                                            { min: 6, message: 'Password must be at least 6 characters' },
-                                                        ]}
-                                                    >
-                                                        <Input.Password placeholder="*******" type="password" />
-                                                    </Form.Item>
-                                                    <Form.Item
-                                                        name={'phone'}
-                                                        label="Phone"
-                                                        required={false}
-                                                        rules={[
-                                                            { required: true, message: 'Please input your phone number!' },
-                                                            { pattern: /^[0-9]{10}$/, message: 'Please enter a valid 10-digit phone number.' },
-                                                        ]}
-                                                    >
-                                                        <Input placeholder="1234567890" autoComplete="off" />
-                                                    </Form.Item>
+                                                    {!isUpdateMode && (
+                                                        <Form.Item
+                                                            name={'password'}
+                                                            label="Password"
+                                                            required={false}
+                                                            rules={[
+                                                                { required: true, message: 'Please input your password!' },
+                                                                { min: 6, message: 'Password must be at least 6 characters' },
+                                                            ]}
+                                                        >
+                                                            <Input.Password placeholder="*******" type="password" />
+                                                        </Form.Item>
+                                                    )}
+                                                    {!isUpdateMode && (
+                                                        <Form.Item
+                                                            name={'phone'}
+                                                            label="Phone"
+                                                            required={false}
+                                                            rules={[
+                                                                { required: true, message: 'Please input your phone number!' },
+                                                                { pattern: /^[0-9]{10}$/, message: 'Please enter a valid 10-digit phone number.' },
+                                                            ]}
+                                                        >
+                                                            <Input placeholder="1234567890" autoComplete="off" />
+                                                        </Form.Item>
+                                                    )}
                                                     <Form.Item
                                                         name={'role'}
                                                         label="Role"
@@ -235,11 +242,11 @@ export default function Dashboard() {
                                                     >
                                                         <Select placeholder="Select a role">
                                                             <Option value="admin">Admin</Option>
-                                                            <Option value="event_manager">Event Manager</Option>
+                                                            <Option value="event-manager">Event Manager</Option>
                                                             <Option value="attendee">Attendee</Option>
                                                         </Select>
                                                     </Form.Item>
-                                                    <Button className="btn-primary w-100 p-3" type="submit" htmlType='submit'>Create Account</Button>
+                                                    <Button className="btn-primary w-100 p-3" type="submit" htmlType='submit'>{isUpdateMode ? 'Update User' : 'Create Account'}</Button>
                                                 </Form>
                                             </Modal>
                                         </div>
@@ -247,14 +254,6 @@ export default function Dashboard() {
                                 </div>
                             </div>
                         )}
-                    </div>
-                </div>
-            </div>
-
-            <div className="container py-3">
-                <div className="row">
-                    <div className="col-md-12">
-                        <EventList />
                     </div>
                 </div>
             </div>

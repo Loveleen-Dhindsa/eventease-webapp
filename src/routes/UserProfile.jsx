@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { getSingleUser } from '../services/api.service';
-
+import { Card, Col, Descriptions, Row, Statistic, Button } from 'antd';
 
 const UserProfile = () => {
     const params = useParams();
@@ -31,16 +31,17 @@ const UserProfile = () => {
 
 
     return (
-        <div>
-            {user ? (
-                <div>
-                    <h2>{user.name}</h2>
-                    <p>{user.email}</p>
-                    <p>{user.phone}</p>
-                </div>
-            ) : (
-                <p>Loading...</p>
-            )}
+
+        <div className="p-5">
+            <Card title="User info">
+                <Descriptions>
+                    <Descriptions.Item label="Name">{user?.name}</Descriptions.Item>
+                    <Descriptions.Item label="Email">{user?.email}</Descriptions.Item>
+                    <Descriptions.Item label="Created At">
+                        {user?.createdAt}
+                    </Descriptions.Item>
+                </Descriptions>
+            </Card>
         </div>
     );
 

@@ -1,14 +1,17 @@
 import React, { useState } from 'react'
-import { loginApi, signupApi } from '../../services/api.service';
+import { loginApi, loginUser, signupApi } from '../../services/api.service';
 import { Button, Form, Input, Alert } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
+import { setAccessToken, saveUserToLocalstorage } from '../../services/localstorage';
+
 
 export default function Login() {
+    const [user, setUser] = useState(null);
     const [message, setMessage] = useState(null);
     const navigate = useNavigate();
 
     const handleSubmit = (values) => {
-        loginApi({
+        loginUser({
             email: values.email,
             password: values.password,
         })
@@ -16,14 +19,16 @@ export default function Login() {
                 console.log('Response:', response);
                 const user = response;
                 if (user) {
-                    localStorage.setItem('eventease_token', user.token);
+                    setAccessToken(user.token);
+                    setUser(user);
+                    saveUserToLocalstorage(user);
                     navigate('/');
                 }
                 setMessage({ type: 'success', content: 'Login successful!' });
 
             }).catch((error) => {
                 console.log('error', error)
-                setMessage({ type: 'error', content: 'Email address is already registered with us.' });
+                setMessage({ type: 'error', content: 'Invalid Username/Password Combination' });
             });
     };
     return (
@@ -53,7 +58,7 @@ export default function Login() {
                                         ]}
                                         required={false}
                                     >
-                                        <Input placeholder="tony@starkindustries.com" autoComplete='off' />
+                                        <Input placeholder="abc@gmail.com" autoComplete='off' />
                                     </Form.Item>
 
                                     <Form.Item

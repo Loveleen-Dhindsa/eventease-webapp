@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { getEventsById } from '../services/api.service';
-
+import { Card, Descriptions } from 'antd';
 
 const EventProfile = () => {
     const params = useParams();
@@ -29,18 +29,21 @@ const EventProfile = () => {
 
 
     return (
-        <div>
-            {event ? (
-                <div>
-                    <h2>{event.eventName}</h2>
-                    <p>{event.eventDescription}</p>
-                    <p>{event.eventDate}</p>
-                    <p>{event.eventLocation}</p>
-                </div>
-            ) : (
-                <p>Loading...</p>
-            )}
+        <div className="p-5">
+            <Card title="event info">
+                <Descriptions>
+                    <Descriptions.Item label="Event Name">{event?.eventName}</Descriptions.Item>
+                    <Descriptions.Item label="Event Description">{event?.eventDescription}</Descriptions.Item>
+                    <Descriptions.Item label="Event Date">{event?.eventDate}</Descriptions.Item>
+                    <Descriptions.Item label="Event Location">{event?.eventLocation}</Descriptions.Item>
+                    <Descriptions.Item label="Category">{event?.category}</Descriptions.Item>
+                    <Descriptions.Item label="Created At">
+                        {event?.createdAt}
+                    </Descriptions.Item>
+                </Descriptions>
+            </Card>
         </div>
+
     );
 
 };

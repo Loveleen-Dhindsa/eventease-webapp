@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { TbTrash, TbEdit, TbPlus } from 'react-icons/tb';
+import { TbTrash, TbEdit, TbPlus, TbSearch } from 'react-icons/tb';
 import { Container } from "react-bootstrap"
 import { createEvent, deleteEvent, updateEvent, getEvents } from '../services/api.service'
-import { Button, Form, Input, Select, Table, Popconfirm, Modal } from 'antd';
+import { Form, Button, Input, Select, Table, Popconfirm, Modal } from 'antd';
+const { Option } = Select;
+
 
 export default function EventList() {
   const [message, setMessage] = useState(null);
@@ -13,6 +15,9 @@ export default function EventList() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isUpdateMode, setIsUpdateMode] = useState(false);
   const [currenteventId, setCurrenteventId] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [form] = Form.useForm();
+
 
   useEffect(() => {
     fetchEvents();
@@ -35,8 +40,10 @@ export default function EventList() {
     if (event) {
       setIsUpdateMode(true);
       setCurrenteventId(event._id);
+      form.setFieldsValue(event);
     } else {
       setIsUpdateMode(false);
+      form.resetFields();
     }
     setIsModalVisible(true);
   };
@@ -46,6 +53,20 @@ export default function EventList() {
     setCurrenteventId(null);
   };
 
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const getFilteredEvents = () => {
+    if (!searchQuery) {
+      return events;
+    }
+    return events.filter(event =>
+      event.category && event.category.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  };
+
   const handleCreateOrUpdateEvent = (values) => {
 
     if (isUpdateMode) {
@@ -53,10 +74,11 @@ export default function EventList() {
         eventName: values.eventName,
         eventDescription: values.eventDescription,
         eventDate: values.eventDate,
-        eventLocation: values.eventLocation
+        eventLocation: values.eventLocation,
+        category: values.category
       })
-        .then(({ data: result }) => {
-          console.log('Updated event:', result);
+        .then((res) => {
+          console.log('res', res)
           fetchEvents();
           hideModal();
         })
@@ -68,10 +90,11 @@ export default function EventList() {
         eventName: values.eventName,
         eventDescription: values.eventDescription,
         eventDate: values.eventDate,
-        eventLocation: values.eventLocation
+        eventLocation: values.eventLocation,
+        category: values.category
       })
-        .then(({ data: result }) => {
-          console.log('Created event:', result);
+        .then((res) => {
+          console.log('Created event:', res);
           fetchEvents();
           hideModal();
         }).catch((error) => {
@@ -117,35 +140,49 @@ export default function EventList() {
                     </div>
                   </div>
                 </div>
+                <div class="row justify-content-center mb-5">
+                  <div className="col-md-6 mt-3">
+                    <div className="input-group">
+                      <span className="input-group-text"><TbSearch size={25} /></span>
+                      <input type="text" className="form-control" placeholder="Search Category....." onChange={handleSearchChange} />
+                    </div>
+                  </div>
+                </div>
 
                 <Table
-                  dataSource={events}
+                  dataSource={getFilteredEvents()}
+                  rowKey="id"
                   pagination={{
                     pageSize: 100,
                   }}
                 >
                   <Table.Column
-                    key={'eventName'}
-                    title={'Event Name'}
-                    dataIndex={'eventName'}
+                    key="eventName"
+                    title="Event Name"
+                    dataIndex="eventName"
                     render={(text, record) => (
                       <Link to={`/events/${record._id}`}>{text}</Link>
                     )}
                   />
                   <Table.Column
-                    key={'eventDate'}
-                    title={'Event Date'}
-                    dataIndex={'eventDate'}
+                    key="eventDate"
+                    title="Event Date"
+                    dataIndex="eventDate"
                   />
                   <Table.Column
-                    key={'eventLocation'}
-                    title={'Event Location'}
-                    dataIndex={'eventLocation'}
+                    key="eventLocation"
+                    title="Event Location"
+                    dataIndex="eventLocation"
                   />
                   <Table.Column
-                    key={'createdAt'}
-                    title={'Date Created'}
-                    dataIndex={'createdAt'}
+                    key="category"
+                    title="Category"
+                    dataIndex="category"
+                  />
+                  <Table.Column
+                    key="createdAt"
+                    title="Date Created"
+                    dataIndex="createdAt"
                   />
                   <Table.Column
                     key="actions"
@@ -153,7 +190,7 @@ export default function EventList() {
                     render={(text, record) => (
                       <div>
                         <Popconfirm title="Are you sure you want to delete this event?" onConfirm={() => handleDeleteEvent(record._id)}>
-                          <Button size='small'>
+                          <Button size="small">
                             <TbTrash />
                           </Button>
                         </Popconfirm>
@@ -172,7 +209,7 @@ export default function EventList() {
                         footer={false}
                         destroyOnClose={true}
                       >
-                        <Form layout="vertical" onFinish={handleCreateOrUpdateEvent}>
+                        <Form form={form} layout="vertical" onFinish={handleCreateOrUpdateEvent}>
                           <Form.Item label="Event Name" name="eventName" rules={[{ required: true, message: 'Please input the event name!' }]}>
                             <Input />
                           </Form.Item>
@@ -184,6 +221,24 @@ export default function EventList() {
                           </Form.Item>
                           <Form.Item label="Event Loaction" name="eventLocation" rules={[{ required: true, message: 'Please input the event location!' }]}>
                             <Input />
+                          </Form.Item>
+                          <Form.Item
+                            name={'category'}
+                            label="Category"
+                            rules={[
+                              {
+                                required: false,
+                                message: 'Please select your category!',
+                              },
+                            ]}
+                          >
+                            <Select placeholder="Select a category">
+                              <Option value="music">Music</Option>
+                              <Option value="sports">Sports</Option>
+                              <Option value="arts">Arts</Option>
+                              <Option value="education">Education</Option>
+                              <Option value="business">Business</Option>
+                            </Select>
                           </Form.Item>
                           <Button className="btn-primary w-100 p-3" type="submit" htmlType='submit'>Create Event</Button>
                         </Form>
@@ -199,4 +254,51 @@ export default function EventList() {
     </Container>
   )
 }
+
+// const eventsData = [
+//   { id: 1, name: 'Music Concert', category: 'Music' },
+//   { id: 2, name: 'Football Match', category: 'Sports' },
+//   { id: 3, name: 'Art Exhibition', category: 'Art' },
+//   { id: 4, name: 'Basketball Game', category: 'Sports' },
+//   { id: 5, name: 'Classical Music', category: 'Music' },
+// ];
+
+// const UserProfile = () => {
+//   const [events, setEvents] = useState(eventsData);
+//   const [searchQuery, setSearchQuery] = useState('');
+
+//   const handleSearchChange = (e) => {
+//       setSearchQuery(e.target.value);
+//   };
+
+//   const getFilteredEvents = () => {
+//       return events.filter(event =>
+//           event.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+//           event.category.toLowerCase().includes(searchQuery.toLowerCase())
+//       );
+//   };
+
+//   return (
+//       <div>
+//           <h1>Event Management</h1>
+//           <div>
+//               <input
+//                   type="text"
+//                   placeholder="Search events..."
+//                   value={searchQuery}
+//                   onChange={handleSearchChange}
+//               />
+//           </div>
+//           <div>
+//               <h2>Events:</h2>
+//               <ul>
+//                   {getFilteredEvents().map(event => (
+//                       <li key={event.id}>{event.name} - {event.category}</li>
+//                   ))}
+//               </ul>
+//           </div>
+//       </div>
+//   );
+// };
+
 
