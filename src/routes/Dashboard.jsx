@@ -54,7 +54,7 @@ export default function Dashboard() {
         if (isUpdateMode) {
             updateUser(currentUserId, {
                 name: values.name,
-                email: values.email,
+                // email: values.email,
                 password: values.password,
                 phone: values.phone
             })
@@ -197,7 +197,7 @@ export default function Dashboard() {
                                                         ]}
                                                         required={false}
                                                     >
-                                                        <Input placeholder="tony@starkindustries.com" disabled={isUpdateMode} />
+                                                        <Input placeholder="abc@gmail.com" />
                                                     </Form.Item>
 
                                                     <Form.Item
@@ -235,7 +235,7 @@ export default function Dashboard() {
                                                     >
                                                         <Select placeholder="Select a role">
                                                             <Option value="admin">Admin</Option>
-                                                            <Option value="event_manager">Event Manager</Option>
+                                                            <Option value="event-manager">Event Manager</Option>
                                                             <Option value="attendee">Attendee</Option>
                                                         </Select>
                                                     </Form.Item>

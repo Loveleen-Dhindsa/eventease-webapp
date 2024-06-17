@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import "./Home.css";
+// import "./Home.css";
 import EventList from './EventList';
 import { getUpcomingEvents } from '../services/api.service';
 import { Card, List, Typography, Col, Row } from 'antd';
+import LatestEvent from './LatestEvent';
+import UpcomingEvent from './UpcomingEvent';
 
 const Home = () => {
     const [upcomingEvents, setUpcomingEvents] = useState([]);
@@ -26,24 +28,34 @@ const Home = () => {
         fetchUpcomingEvents();
     }, []);
 
-    console.log('upcomingEvents----------', upcomingEvents)
-    console.log('totalUpcomingEvents----------', totalUpcomingEvents)
-
-
-
     return (
         <div className="home-section">
-            <div className="container">
+            <div className="dashboard-header">
+                <img
+                    src="/images/event-page.png"
+                    alt="Event Management System"
+                    className="dashboard-image w-100 vh-20"
+                />
+            </div>
+            <div className="container mt-5">
                 <div className="row">
                     <div className="col-md-12">
                         <div className="mx-auto text-center">
-                            <h1 className="text-capitalize fw-bold">
+                            <h1 className="text-capitalize fw-bold mb-3">
                                 Welcome to Event Management System
                             </h1>
                             <p className="lead source fw-light">
-                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis quas repellendus fugit dolorum consectetur repellat, excepturi laboriosam est necessitatibus accusamus tempora explicabo iure harum in veniam architecto rem ea, officiis porro beatae? Ad vel dicta est cumque esse provident natus, quaerat, dolor exercitationem molestiae ducimus laboriosam dolorem! Maxime perferendis dignissimos qui natus placeat sapiente fuga error, quis ipsum quam sint itaque minima aperiam quaerat tenetur voluptatibus perspiciatis officia ex officiis, sequi blanditiis, expedita temporibus. Ea tempore tenetur neque sit aspernatur, voluptatum molestias magnam id atque vel nemo officiis explicabo ipsam labore soluta ipsum expedita delectus rem quis sunt! Voluptate, consequatur.
+                                Welcome to the ultimate platform for managing and attending events effortlessly. Whether you're an organizer planning a grand conference or a participant looking for exciting events to attend, our Event Management System has everything you need.
                             </p>
-                            <div className="space mt-5 text-center">
+
+                            <div className="row mt-5 mb-5 text-center">
+                                <LatestEvent />
+                            </div>
+
+                            <div className="row mt-5 mb-5 text-center">
+                                <UpcomingEvent />
+                            </div>
+                            {/* <div className="space mt-5 text-center mb-5">
                                 <div className="upcoming-events-container">
                                     <h2 className="mb-5">Upcoming Events</h2>
                                     <Row gutter={16}>
@@ -62,7 +74,7 @@ const Home = () => {
                                     </Row>
                                 </div>
 
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 </div>

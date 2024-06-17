@@ -27,19 +27,35 @@ const EventProfile = () => {
         fetchSingleEvent();
     }, [eventId]);
 
+    const getImagePath = (category) => {
+        const categoryImages = {
+            'birthday': '/images/birthday.jpg',
+            'music': '/images/music.jpg',
+            'sports': '/images/sports.jpg',
+            // Add more categories and their corresponding images as needed
+        };
+        return categoryImages[category] || '/images/default.jpg';
+    };
+
 
     return (
-        <div>
-            {event ? (
-                <div>
-                    <h2>{event.eventName}</h2>
-                    <p>{event.eventDescription}</p>
-                    <p>{event.eventDate}</p>
-                    <p>{event.eventLocation}</p>
+        <div className="single-event-section">
+            <div className="container">
+                <div className="row">
+                    {event ? (
+                        <div>
+                            <img className="w-100 mb-5 mt-5" src={getImagePath(event.category)} alt={event.category} />
+                            <h2>{event.eventName}</h2>
+                            <p className="lead">{event.eventDescription}</p>
+                            <p>{event.eventDate}</p>
+                            <p>{event.eventLocation}</p>
+                        </div>
+                    ) : (
+                        <p>Loading...</p>
+                    )}
+
                 </div>
-            ) : (
-                <p>Loading...</p>
-            )}
+            </div>
         </div>
     );
 

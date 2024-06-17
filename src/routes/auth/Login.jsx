@@ -2,9 +2,12 @@ import React, { useState } from 'react'
 import { loginApi, signupApi } from '../../services/api.service';
 import { Button, Form, Input, Alert } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
+import { setAccessToken, saveUserToLocalstorage } from '../../services/localstorage';
+
 
 export default function Login() {
     const [message, setMessage] = useState(null);
+    const [user, setUser] = useState(null);
     const navigate = useNavigate();
 
     const handleSubmit = (values) => {
@@ -16,14 +19,16 @@ export default function Login() {
                 console.log('Response:', response);
                 const user = response;
                 if (user) {
-                    localStorage.setItem('eventease_token', user.token);
+                    setAccessToken(user.token);
+                    setUser(user);
+                    saveUserToLocalstorage(user);
                     navigate('/');
                 }
                 setMessage({ type: 'success', content: 'Login successful!' });
 
             }).catch((error) => {
                 console.log('error', error)
-                setMessage({ type: 'error', content: 'Email address is already registered with us.' });
+                setMessage({ type: 'error', content: 'Invalid Username/Password Combination' });
             });
     };
     return (
@@ -32,7 +37,7 @@ export default function Login() {
                 <div className="container py-5">
                     <div className="row justify-content-center">
                         <div className="col-lg-5">
-                            <div className="form-wrapper auth-form bg-light mt-5 p-5">
+                            <div className="form-wrapper auth-form bg-light mt-3 p-5">
                                 <Form layout="vertical" onFinish={handleSubmit}>
                                     <h3>Create a new Account</h3>
                                     <hr />
@@ -53,7 +58,7 @@ export default function Login() {
                                         ]}
                                         required={false}
                                     >
-                                        <Input placeholder="tony@starkindustries.com" autoComplete='off' />
+                                        <Input placeholder="abc@gmail.com" autoComplete='off' />
                                     </Form.Item>
 
                                     <Form.Item

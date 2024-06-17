@@ -4,7 +4,7 @@ export default function
     () {
     return (
         <div className="about-us-section">
-            <div className="container py-3">
+            {/* <div className="container py-3">
                 <div className="row">
                     <div className="col-md-12">
                         <h1 className="text-center">
@@ -18,6 +18,63 @@ export default function
 
                     </div>
                 </div>
+            </div> */}
+            <div className="container">
+                <h1 className="mt-5 mb-5 text-center">About Us</h1>
+                <section className="mb-5">
+                    <h2>Company Overview</h2>
+                    <p>
+                        Our company, XYZ Inc., is dedicated to providing top-notch services and products to our customers. Founded in 2010, we have consistently strived to innovate and improve our offerings to meet the needs of a dynamic market.
+                    </p>
+                </section>
+                <section className="mb-5">
+                    <h2>Mission Statement</h2>
+                    <p>
+                        Our mission is to empower individuals and businesses by delivering high-quality solutions that foster growth, efficiency, and success.
+                    </p>
+                </section>
+                <section className="mb-5">
+                    <h2>History</h2>
+                    <p>
+                        XYZ Inc. started as a small startup in a garage. Over the years, we have grown into a global leader in our industry, with a presence in over 20 countries and a diverse team of professionals.
+                    </p>
+                </section>
+                <section className="mb-5">
+                    <h2>Our Team</h2>
+                    <p>
+                        Our team consists of passionate, dedicated professionals who are experts in their fields. From our engineers to our customer support staff, every team member plays a crucial role in our success.
+                    </p>
+                    <ul>
+                        <li><strong>John Doe</strong> - CEO</li>
+                        <li><strong>Jane Smith</strong> - CTO</li>
+                        <li><strong>Emily Johnson</strong> - COO</li>
+                        {/* Add more team members as needed */}
+                    </ul>
+                </section>
+                <section className="mb-5">
+                    <h2>Achievements</h2>
+                    <p>
+                        We are proud of our achievements, which include numerous awards for innovation, customer satisfaction, and industry leadership. Our milestones are a testament to our commitment to excellence.
+                    </p>
+                    <ul>
+                        <li>Best Startup of the Year - 2012</li>
+                        <li>Innovation in Technology Award - 2015</li>
+                        <li>Customer Choice Award - 2018</li>
+                        {/* Add more achievements as needed */}
+                    </ul>
+                </section>
+                <section className="mb-5">
+                    <h2>Contact Us</h2>
+                    <p>
+                        We'd love to hear from you! Feel free to reach out to us at:
+                    </p>
+                    <address>
+                        <strong>XYZ Inc.</strong><br />
+                        123 Main Street<br />
+                        Anytown, USA 12345<br />
+                        <a href="mailto:info@xyz.com">info@xyz.com</a>
+                    </address>
+                </section>
             </div>
 
         </div>

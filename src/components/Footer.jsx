@@ -5,89 +5,101 @@ import fablogo from "../assets/fablogo.jpeg";
 import locationImg from "../assets/location_img.png";
 import emaillogo from "../assets/emaillogo.jpg";
 import phoneLogo from "../assets/phoneLogo.png";
+import { Form, Input, Button, Row, Col, Select, Alert } from 'antd';
+
 
 import "./footer.css";
+import { Link } from "react-router-dom";
 const Footer = () => {
   const date = new Date();
   const year = date.getFullYear();
 
   return (
     <>
-      <footer class="footer-section">
-        <div class="container">
-          <div class="footer-content footer-cta pt-5 pb-5">
-            <div class="row">
-              <div class="col-xl-6 col-lg-6 mb-50">
-                <div class="footer-widget">
-                  <div class="footer-logo">
+      <footer className="footer-section">
+        <div className="container">
+          <div className="footer-content footer-cta pt-5 pb-5">
+            <div className="row">
+              <div className="col-xl-4 col-lg-4 mb-50">
+                <div className="footer-widget">
+                  <div className="footer-logo">
                     <a href="index.html">
-                      <img src={footerlogo} class="img-fluid" alt="logo" />
+                      <img src={footerlogo} className="img-fluid" alt="logo" />
                     </a>
                   </div>
                 </div>
               </div>
-              <div class="col-xl-6 col-lg-6 mb-50">
-                <div class="footer-social-icon">
+              <div className="col-xl-4 col-lg-4 mb-50">
+                <div className="footer-social-icon">
                   <span>Follow us</span>
                   <a href="1">
                     <img
                       src={instalogo}
-                      alt="ghj"
-                      style={{ height: "50px", width: "50px" }}
+                      alt="instalogo"
+                      className="icon-image"
                     ></img>
                   </a>
-                  {/* <a href="1"><i class="fab fa-facebook-f facebook-bg"></i></a> */}
                   <a href="1">
                     <img
                       src={fablogo}
-                      alt="ghj"
-                      style={{ height: "50px", width: "50px" }}
+                      alt="fablogo"
+                      className="icon-image"
                     ></img>
                   </a>
+                </div>
+              </div>
+              <div className="col-xl-4 col-lg-4 mb-50">
+                <div className="feedback-section">
+                  <div className="feedback mt-3">
+                    <h3 className="text-white">
+                      Please Submit Your feedback
+                    </h3>
+                    <Link to={`/feedback`} className="card-link text-decoration-none mt-2 text-center ">
+                      <span className="fs-4"> Click Here</span>
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <div class="pt-5 pb-5">
-            <div class="row">
-              <div class="col-xl-4 col-md-4 mb-30">
-                <div class="single-cta">
+          <div className="pt-5 pb-5">
+            <div className="row">
+              <div className="col-xl-4 col-md-4 mb-30">
+                <div className="single-cta d-flex align-items-center">
                   <img
                     src={locationImg}
                     alt="ghj"
-                    style={{ height: "50px", width: "50px" }}
+                    className="icon-image"
                   ></img>
-                  <i class="fas fa-map-marker-alt"></i>
-                  <div class="cta-text">
+                  <i className="fas fa-map-marker-alt"></i>
+                  <div className="cta-text ms-3">
                     <h4>Find us</h4>
                     <span>105 Onward Avenue, Kitchiner, Canada</span>
                   </div>
                 </div>
               </div>
-              <div class="col-xl-4 col-md-4 mb-30">
-                <div class="single-cta">
+              <div className="col-xl-4 col-md-4 mb-30">
+                <div className="single-cta d-flex align-items-center">
                   <img
                     src={phoneLogo}
-                    class="img-fluid"
                     alt="logo"
-                    style={{ height: "50px", width: "50px" }}
+                    className="icon-image"
                   />
-                  <div class="cta-text">
+                  <div className="cta-text ms-3">
                     <h4>Call us</h4>
                     <span>5483332572</span>
                   </div>
                 </div>
               </div>
-              <div class="col-xl-4 col-md-4 mb-30">
-                <div class="single-cta">
+              <div className="col-xl-4 col-md-4 mb-30">
+                <div className="single-cta d-flex align-items-center">
                   <img
                     src={emaillogo}
-                    class="img-fluid"
                     alt="logo"
-                    style={{ height: "50px", width: "50px" }}
+                    className="icon-image"
                   />
-                  <div class="cta-text">
+                  <div className="cta-text ms-3">
                     <h4>Mail us</h4>
                     <span>EventEase@Events.com</span>
                   </div>
@@ -97,19 +109,19 @@ const Footer = () => {
           </div>
         </div>
 
-        <div class="copyright-area">
-          <div class="container">
-            <div class="row">
-              <div class="col-xl-6 col-lg-6 text-center text-lg-left">
-                <div class="copyright-text">
+        <div className="copyright-area">
+          <div className="container">
+            <div className="row">
+              <div className="col-xl-6 col-lg-6 text-center text-lg-left">
+                <div className="copyright-text">
                   <p>
                     Copyright &copy; {year}, All Right Reserved{" "}
                     <a href="mailto: mkmywebsite101@gmail.com"></a>
                   </p>
                 </div>
               </div>
-              <div class="col-xl-6 col-lg-6 d-none d-lg-block text-right">
-                <div class="footer-menu">
+              <div className="col-xl-6 col-lg-6 d-none d-lg-block text-right">
+                <div className="footer-menu">
                   <ul>
                     {/* <li><a href="1">Terms</a></li>
                                 <li><a href="1">Privacy</a></li>

@@ -2,9 +2,11 @@ import React, { useState } from 'react'
 import { signupApi } from '../../services/api.service';
 import { Button, Form, Input, Alert } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
+import { setAccessToken, saveUserToLocalstorage } from '../../services/localstorage';
 
 export default function Signup() {
     const [message, setMessage] = useState(null);
+    const [user, setUser] = useState(null);
     const navigate = useNavigate();
 
     const handleSubmit = (values) => {
@@ -14,12 +16,13 @@ export default function Signup() {
             password: values.password,
             phone: values.phone
         })
-            .then(({ data: result }) => {
-                const user = result;
-                console.log('result=====', user);
-
+            .then((response) => {
+                console.log('Response:', response);
+                const user = response;
                 if (user) {
-                    localStorage.setItem('eventease_token', user.token)
+                    setAccessToken(user.token);
+                    setUser(user);
+                    saveUserToLocalstorage(user);
                     navigate('/');
                 }
                 setMessage({ type: 'success', content: 'Signup successful!' });
@@ -34,7 +37,7 @@ export default function Signup() {
                 <div className="container py-5">
                     <div className="row justify-content-center">
                         <div className="col-lg-5">
-                            <div className="form-wrapper auth-form bg-light mt-5 p-5">
+                            <div className="form-wrapper auth-form bg-light mt-3 p-5">
                                 <Form layout="vertical" onFinish={handleSubmit}>
                                     <h3>Create a new Account</h3>
                                     <hr />

@@ -77,3 +77,21 @@ export const updateUser = async (id, body) => {
     return response.data;
   });
 };
+
+export const createContact = async (body) => {
+  return axios.post('/contacts', body).then(({ data: response }) => {
+    return response.data;
+  });
+};
+
+export const createFeedback = async (body) => {
+  return axios.post('/feedback', body).then(({ data: response }) => {
+    return response.data;
+  });
+};
+
+export const updateAccount = async (body) => {
+  return axios.put('/users/update-account', body).then((response) => {
+    return response.data;
+  });
+};
