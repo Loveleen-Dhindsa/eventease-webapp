@@ -1,22 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { TbTrash, TbEdit, TbPlus } from 'react-icons/tb';
-import EventList from './EventList'
-import { Container } from "react-bootstrap"
-import { createUser, deleteSingleUser, getUsers, updateUser } from '../services/api.service'
-import { Button, Form, Input, Alert, Select, Table, Popconfirm, Modal } from 'antd';
-const { Option } = Select;
+import { Container, Button, Form, Modal, Table, InputGroup, DropdownButton, Dropdown } from "react-bootstrap";
+import { createUser, deleteSingleUser, getUsers, updateUser } from '../services/api.service';
+import { clearAccessToken, clearUserFromLocalstorage } from '../services/localstorage';
 
 export default function Dashboard() {
-    const [message, setMessage] = useState(null);
     const [users, setUsers] = useState([]);
-    const [totalUsers, setTotalUsers] = useState([])
+    const [totalUsers, setTotalUsers] = useState(0);
     const [loading, setLoading] = useState(true);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [isUpdateMode, setIsUpdateMode] = useState(false);
     const [currentUserId, setCurrentUserId] = useState(null);
-    const [form] = Form.useForm();
-
+    const [formValues, setFormValues] = useState({
+        name: '',
+        email: '',
+        password: '',
+        phone: '',
+        role: 'attendee'
+    });
 
     useEffect(() => {
         fetchUsers();
@@ -39,10 +41,16 @@ export default function Dashboard() {
         if (user) {
             setIsUpdateMode(true);
             setCurrentUserId(user._id);
-            form.setFieldsValue(user);
+            setFormValues(user);
         } else {
             setIsUpdateMode(false);
-            form.resetFields();
+            setFormValues({
+                name: '',
+                email: '',
+                password: '',
+                phone: '',
+                role: 'attendee'
+            });
         }
         setIsModalVisible(true);
     };
@@ -52,55 +60,50 @@ export default function Dashboard() {
         setCurrentUserId(null);
     };
 
-    const handleCreateOrUpdateUser = (values) => {
+    const handleCreateOrUpdateUser = async (event) => {
+        event.preventDefault();
+        const { name, email, password, phone, role } = formValues;
 
         if (isUpdateMode) {
-            updateUser(currentUserId, {
-                name: values.name,
-                email: values.email,
-                password: values.password,
-                phone: values.phone,
-                role: values.role
-            })
-                .then((res) => {
-                    console.log('res', res)
-                    fetchUsers();
-                    hideModal();
-                })
-                .catch((error) => {
-                    console.log('Error updating user:', error);
-                });
+            try {
+                await updateUser(currentUserId, { name, email, password, phone, role });
+                fetchUsers();
+                hideModal();
+            } catch (error) {
+                console.error('Error updating user:', error);
+            }
         } else {
-            createUser({
-                name: values.name,
-                email: values.email,
-                password: values.password,
-                phone: values.phone,
-                role: values.role
-
-            })
-                .then((res) => {
-                    console.log('Created user:', res);
-                    fetchUsers();
-                    hideModal();
-                }).catch((error) => {
-                    console.log('error', error)
-                    setMessage({ type: 'error', content: 'Error Occured' });
-                });
+            try {
+                await createUser({ name, email, password, phone, role });
+                fetchUsers();
+                hideModal();
+            } catch (error) {
+                console.error(error);
+            }
         }
-
     };
 
-    const handleDeleteUser = (id) => {
-        deleteSingleUser(id)
-            .then(({ data: result }) => {
-                const user = result;
-                console.log('Deleted user:', user);
-                fetchUsers();
-            })
-            .catch((error) => {
-                console.log('Error deleting user:', error);
-            })
+    const handleDeleteUser = async (id) => {
+        try {
+            await deleteSingleUser(id);
+            fetchUsers();
+        } catch (error) {
+            console.error('Error deleting user:', error);
+        }
+    };
+
+    const handleChange = (event) => {
+        setFormValues({ ...formValues, [event.target.name]: event.target.value });
+    };
+
+    const handleRoleChange = (role) => {
+        setFormValues({ ...formValues, role });
+    };
+
+    const handleLogout = () => {
+        clearAccessToken();
+        clearUserFromLocalstorage();
+        window.location.href = '/login';
     };
 
     return (
@@ -117,147 +120,134 @@ export default function Dashboard() {
                                         <h3>Total List of Users: {totalUsers}</h3>
                                     </div>
 
-                                    <div className="col-md-4 text-end">
-                                        <div className="dashboard-actions">
-                                            <Button className="text-end" type="primary" onClick={() => showModal(null)}>
+                                    <div className="col-md-4">
+                                        <div className="d-flex justify-content-end">
+                                            <Button className="mx-2 justify-content-end" variant="primary" onClick={() => showModal(null)}>
                                                 <TbPlus /> New User
+                                            </Button>
+                                            <Button
+                                                type="text"
+                                                onClick={handleLogout}
+                                                className="btn btn-secondary p-2 mx-2"
+                                            >
+                                                Logout
                                             </Button>
                                         </div>
                                     </div>
                                 </div>
-                                <Table
-                                    dataSource={users}
-                                    pagination={{
-                                        pageSize: 100,
-                                    }}
-                                >
-                                    <Table.Column
-                                        key={'name'}
-                                        title={'Name'}
-                                        dataIndex={'name'}
-                                        render={(text, record) => (
-                                            <Link to={`/users/${record._id}`}>{text}</Link>
-                                        )}
-                                    />
-                                    <Table.Column key={'role'} title={'Role'} dataIndex={'role'} />
-
-                                    <Table.Column key={'email'} title={'Email'} dataIndex={'email'} />
-                                    <Table.Column
-                                        key={'createdAt'}
-                                        title={'Date Created'}
-                                        dataIndex={'createdAt'}
-                                    />
-                                    <Table.Column
-                                        key="actions"
-                                        title="Actions"
-                                        render={(text, record) => (
-                                            <div>
-                                                <Popconfirm title="Are you sure you want to delete this user?" onConfirm={() => handleDeleteUser(record._id)}>
-                                                    <Button className="m-2" size='small'>
+                                <Table striped bordered hover>
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Role</th>
+                                            <th>Email</th>
+                                            <th>Date Created</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {users.map(user => (
+                                            <tr key={user._id}>
+                                                <td><Link to={`/users/${user._id}`}>{user.name}</Link></td>
+                                                <td>{user.role}</td>
+                                                <td>{user.email}</td>
+                                                <td>{user.createdAt}</td>
+                                                <td>
+                                                    <Button variant="danger" size="sm" className="m-2" onClick={() => handleDeleteUser(user._id)}>
                                                         <TbTrash />
                                                     </Button>
-                                                </Popconfirm>
-
-                                                <Button icon={<TbEdit />} onClick={() => showModal(record)} />
-                                            </div>
-                                        )}
-                                    />
+                                                    <Button variant="secondary" size="sm" onClick={() => showModal(user)}>
+                                                        <TbEdit />
+                                                    </Button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
                                 </Table>
-                                <div className="row justify-content-center">
-                                    <div className="col-md-10">
-                                        <div className="form-wrapper auth-form">
-                                            <Modal className="text-center fs-2"
-                                                title={isUpdateMode ? "Update User" : "Create User"}
-                                                open={isModalVisible}
-                                                onCancel={hideModal}
-                                                footer={false}
-                                                destroyOnClose={true}
-                                            >
-                                                <Form layout="vertical" form={form}
-                                                    onFinish={handleCreateOrUpdateUser}>
-                                                    <hr />
 
-                                                    <Form.Item
-                                                        name={'name'}
-                                                        label="Name"
-                                                        rules={[
-                                                            {
-                                                                required: true,
-                                                                message: 'Please input your name!',
-                                                            },
-                                                        ]}
-                                                        required={false}
-                                                    >
-                                                        <Input placeholder="Name" />
-                                                    </Form.Item>
+                                <Modal show={isModalVisible} onHide={hideModal} centered>
+                                    <Modal.Header closeButton>
+                                        <Modal.Title>{isUpdateMode ? "Update User" : "Create User"}</Modal.Title>
+                                    </Modal.Header>
+                                    <Modal.Body>
+                                        <Form onSubmit={handleCreateOrUpdateUser}>
+                                            <Form.Group className="mb-3">
+                                                <Form.Label>Name</Form.Label>
+                                                <Form.Control
+                                                    type="text"
+                                                    placeholder="Enter name"
+                                                    name="name"
+                                                    value={formValues.name}
+                                                    onChange={handleChange}
+                                                    required
+                                                />
+                                            </Form.Group>
 
-                                                    <Form.Item
-                                                        name={'email'}
-                                                        label="Email"
-                                                        rules={[
-                                                            { required: true, message: 'Please input your email!' },
-                                                            { type: 'email', message: 'Please enter a valid email address.' },
-                                                        ]}
-                                                        required={false}
-                                                    >
-                                                        <Input placeholder="abc@gmail.com" disabled={isUpdateMode} />
-                                                    </Form.Item>
+                                            <Form.Group className="mb-3">
+                                                <Form.Label>Email</Form.Label>
+                                                <Form.Control
+                                                    type="email"
+                                                    placeholder="Enter email"
+                                                    name="email"
+                                                    value={formValues.email}
+                                                    onChange={handleChange}
+                                                    required
+                                                    disabled={isUpdateMode}
+                                                />
+                                            </Form.Group>
 
-                                                    {!isUpdateMode && (
-                                                        <Form.Item
-                                                            name={'password'}
-                                                            label="Password"
-                                                            required={false}
-                                                            rules={[
-                                                                { required: true, message: 'Please input your password!' },
-                                                                { min: 6, message: 'Password must be at least 6 characters' },
-                                                            ]}
-                                                        >
-                                                            <Input.Password placeholder="*******" type="password" />
-                                                        </Form.Item>
-                                                    )}
-                                                    {!isUpdateMode && (
-                                                        <Form.Item
-                                                            name={'phone'}
-                                                            label="Phone"
-                                                            required={false}
-                                                            rules={[
-                                                                { required: true, message: 'Please input your phone number!' },
-                                                                { pattern: /^[0-9]{10}$/, message: 'Please enter a valid 10-digit phone number.' },
-                                                            ]}
-                                                        >
-                                                            <Input placeholder="1234567890" autoComplete="off" />
-                                                        </Form.Item>
-                                                    )}
-                                                    <Form.Item
-                                                        name={'role'}
-                                                        label="Role"
-                                                        defaultValue="attendee"
-                                                        rules={[
-                                                            {
-                                                                required: false,
-                                                                message: 'Please select your role!',
-                                                            },
-                                                        ]}
+                                            {!isUpdateMode && (
+                                                <>
+                                                    <Form.Group className="mb-3">
+                                                        <Form.Label>Password</Form.Label>
+                                                        <Form.Control
+                                                            type="password"
+                                                            placeholder="Enter password"
+                                                            name="password"
+                                                            value={formValues.password}
+                                                            onChange={handleChange}
+                                                            required
+                                                        />
+                                                    </Form.Group>
+                                                    <Form.Group className="mb-3">
+                                                        <Form.Label>Phone</Form.Label>
+                                                        <Form.Control
+                                                            type="text"
+                                                            placeholder="Enter phone number"
+                                                            name="phone"
+                                                            value={formValues.phone}
+                                                            onChange={handleChange}
+                                                            required
+                                                        />
+                                                    </Form.Group>
+                                                </>
+                                            )}
+
+                                            <Form.Group className="mb-3">
+                                                <Form.Label>Role</Form.Label>
+                                                <InputGroup>
+                                                    <DropdownButton
+                                                        variant="outline-secondary"
+                                                        title={formValues.role}
+                                                        onSelect={handleRoleChange}
                                                     >
-                                                        <Select placeholder="Select a role">
-                                                            <Option value="admin">Admin</Option>
-                                                            <Option value="event-manager">Event Manager</Option>
-                                                            <Option value="attendee">Attendee</Option>
-                                                        </Select>
-                                                    </Form.Item>
-                                                    <Button className="btn-primary w-100 p-3" type="submit" htmlType='submit'>{isUpdateMode ? 'Update User' : 'Create Account'}</Button>
-                                                </Form>
-                                            </Modal>
-                                        </div>
-                                    </div>
-                                </div>
+                                                        <Dropdown.Item eventKey="admin">Admin</Dropdown.Item>
+                                                        <Dropdown.Item eventKey="event-manager">Event Manager</Dropdown.Item>
+                                                        <Dropdown.Item eventKey="attendee">Attendee</Dropdown.Item>
+                                                    </DropdownButton>
+                                                </InputGroup>
+                                            </Form.Group>
+                                            <Button variant="primary" type="submit" className="w-100">
+                                                {isUpdateMode ? 'Update User' : 'Create Account'}
+                                            </Button>
+                                        </Form>
+                                    </Modal.Body>
+                                </Modal>
                             </div>
                         )}
                     </div>
                 </div>
             </div>
         </Container>
-    )
+    );
 }
-

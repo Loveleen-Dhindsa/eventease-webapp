@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { TbTrash, TbEdit, TbPlus } from 'react-icons/tb';
-import { Container } from "react-bootstrap"
-import { createEvent, deleteEvent, updateEvent, getEvents, getContacts, deleteSingleContact, getFeedback, deleteSingleFeedback } from '../services/api.service'
-import { Button, Form, Input, Select, Table, Popconfirm, Modal } from 'antd';
+import { TbTrash } from 'react-icons/tb';
+import { Container, Table, Button } from "react-bootstrap";
+import { getFeedback, deleteSingleFeedback } from '../services/api.service';
 
 export default function Feedback() {
-    const [Feedback, setFeedback] = useState([]);
-    const [totalFeedback, setTotalFeedback] = useState([])
+    const [feedback, setFeedback] = useState([]);
+    const [totalFeedback, setTotalFeedback] = useState(0);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -30,8 +29,7 @@ export default function Feedback() {
     const handleDeleteFeedback = (id) => {
         deleteSingleFeedback(id)
             .then(({ data: result }) => {
-                const user = result;
-                console.log('Deleted Feedback:', user);
+                console.log('Deleted Feedback:', result);
                 fetchFeedback();
             })
             .catch((error) => {
@@ -54,53 +52,33 @@ export default function Feedback() {
                                     </div>
                                 </div>
 
-                                <Table
-                                    dataSource={Feedback}
-                                    pagination={{
-                                        pageSize: 100,
-                                    }}
-                                >
-                                    <Table.Column
-                                        key={'name'}
-                                        title={'Name'}
-                                        dataIndex={'name'}
-                                        render={(text, record) => (
-                                            <Link to={`/Feedback/${record._id}`}>{text}</Link>
-                                        )}
-                                    />
-                                    <Table.Column
-                                        key={'email'}
-                                        title={'Email'}
-                                        dataIndex={'email'}
-                                    />
-                                    <Table.Column
-                                        key={'message'}
-                                        title={'Message'}
-                                        dataIndex={'message'}
-                                    />
-                                    <Table.Column
-                                        key={'feedbackType'}
-                                        title={'Feedback Type'}
-                                        dataIndex={'feedbackType'}
-                                    />
-                                    <Table.Column
-                                        key={'createdAt'}
-                                        title={'Date Created'}
-                                        dataIndex={'createdAt'}
-                                    />
-                                    <Table.Column
-                                        key="actions"
-                                        title="Actions"
-                                        render={(text, record) => (
-                                            <div>
-                                                <Popconfirm title="Are you sure you want to delete this feedback?" onConfirm={() => handleDeleteFeedback(record._id)}>
-                                                    <Button size='small'>
+                                <Table striped bordered hover>
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            <th>Message</th>
+                                            <th>Feedback Type</th>
+                                            <th>Date Created</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {feedback.map((item) => (
+                                            <tr key={item._id}>
+                                                <td><Link to={`/feedback/${item._id}`}>{item.name}</Link></td>
+                                                <td>{item.email}</td>
+                                                <td>{item.message}</td>
+                                                <td>{item.feedbackType}</td>
+                                                <td>{item.createdAt}</td>
+                                                <td>
+                                                    <Button variant="danger" size="sm" onClick={() => handleDeleteFeedback(item._id)}>
                                                         <TbTrash />
                                                     </Button>
-                                                </Popconfirm>
-                                            </div>
-                                        )}
-                                    />
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
                                 </Table>
                             </div>
                         )}
@@ -108,5 +86,5 @@ export default function Feedback() {
                 </div>
             </div>
         </Container>
-    )
+    );
 }

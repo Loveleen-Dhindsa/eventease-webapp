@@ -19,3 +19,8 @@ export const getUserFromLocalstorage = () => {
 export const saveUserToLocalstorage = (user) => {
   return localStorage.setItem('user', JSON.stringify(user));
 };
+
+export const clearUserFromLocalstorage = () => {
+  return localStorage.removeItem('user');
+};
+

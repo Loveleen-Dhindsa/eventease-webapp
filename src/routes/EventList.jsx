@@ -1,304 +1,300 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { TbTrash, TbEdit, TbPlus, TbSearch } from 'react-icons/tb';
-import { Container } from "react-bootstrap"
-import { createEvent, deleteEvent, updateEvent, getEvents } from '../services/api.service'
-import { Form, Button, Input, Select, Table, Popconfirm, Modal } from 'antd';
-const { Option } = Select;
-
+import { Plus } from 'react-bootstrap-icons';
+import { TbTrash, TbEdit, TbSearch } from 'react-icons/tb';
+import { Container, Button, Form, Modal, Table, InputGroup, DropdownButton, Dropdown } from "react-bootstrap";
+import { createEvent, deleteEvent, updateEvent, getEvents } from '../services/api.service';
 
 export default function EventList() {
-  const [message, setMessage] = useState(null);
-  const [events, setEvents] = useState([]);
-  const [totalEvents, setTotalEvents] = useState([])
-  const [loading, setLoading] = useState(true);
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isUpdateMode, setIsUpdateMode] = useState(false);
-  const [currenteventId, setCurrenteventId] = useState(null);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [form] = Form.useForm();
+    const [events, setEvents] = useState([]);
+    const [totalEvents, setTotalEvents] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [isUpdateMode, setIsUpdateMode] = useState(false);
+    const [currenteventId, setCurrenteventId] = useState(null);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [formValues, setFormValues] = useState({
+        eventName: '',
+        eventDescription: '',
+        eventDate: '',
+        eventLocation: '',
+        category: '',
+        image: ''
+    });
 
-
-  useEffect(() => {
-    fetchEvents();
-  }, []);
-
-  const fetchEvents = async () => {
-    try {
-      const result = await getEvents();
-      console.log('result', result);
-      setEvents(result);
-      setTotalEvents(result.length);
-      setLoading(false);
-    } catch (error) {
-      console.error('Error:', error);
-      setLoading(false);
-    }
-  };
-
-  const showModal = (event) => {
-    if (event) {
-      setIsUpdateMode(true);
-      setCurrenteventId(event._id);
-      form.setFieldsValue(event);
-    } else {
-      setIsUpdateMode(false);
-      form.resetFields();
-    }
-    setIsModalVisible(true);
-  };
-
-  const hideModal = () => {
-    setIsModalVisible(false);
-    setCurrenteventId(null);
-  };
-
-
-  const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
-  };
-
-  const getFilteredEvents = () => {
-    if (!searchQuery) {
-      return events;
-    }
-    return events.filter(event =>
-      event.category && event.category.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  };
-
-  const handleCreateOrUpdateEvent = (values) => {
-
-    if (isUpdateMode) {
-      updateEvent(currenteventId, {
-        eventName: values.eventName,
-        eventDescription: values.eventDescription,
-        eventDate: values.eventDate,
-        eventLocation: values.eventLocation,
-        category: values.category
-      })
-        .then((res) => {
-          console.log('res', res)
-          fetchEvents();
-          hideModal();
-        })
-        .catch((error) => {
-          console.log('Error updating event:', error);
-        });
-    } else {
-      createEvent({
-        eventName: values.eventName,
-        eventDescription: values.eventDescription,
-        eventDate: values.eventDate,
-        eventLocation: values.eventLocation,
-        category: values.category
-      })
-        .then((res) => {
-          console.log('Created event:', res);
-          fetchEvents();
-          hideModal();
-        }).catch((error) => {
-          console.log('error', error)
-          setMessage({ type: 'error', content: 'Error Occured' });
-        });
-    }
-
-
-  };
-
-  const handleDeleteEvent = (id) => {
-    deleteEvent(id)
-      .then(({ data: result }) => {
-        const event = result;
-        console.log('Deleted event:', event);
+    useEffect(() => {
         fetchEvents();
-      })
-      .catch((error) => {
-        console.log('Error deleting event:', error);
-      })
-  };
+    }, []);
 
-  return (
-    <Container>
-      <div className="dashboard-page-header p-3">
-        <div className="row">
-          <div className="col-md-12">
-            {loading ? (
-              <p>Loading...</p>
-            ) : (
-              <div>
-                <div className="row mb-3">
-                  <div className="col-md-8">
-                    <h3>Total List of Events: {totalEvents}</h3>
-                  </div>
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormValues({
+            ...formValues,
+            [name]: value,
+        });
+    };
 
-                  <div className="col-md-4 text-end">
-                    <div className="dashboard-actions">
-                      <Button className="text-end" type="primary" onClick={() => showModal(null)}>
-                        <TbPlus />New Events
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-                <div class="row justify-content-center mb-5">
-                  <div className="col-md-6 mt-3">
-                    <div className="input-group">
-                      <span className="input-group-text"><TbSearch size={25} /></span>
-                      <input type="text" className="form-control" placeholder="Search Category....." onChange={handleSearchChange} />
-                    </div>
-                  </div>
-                </div>
+    const handleCategoryChange = (eventKey) => {
+        setFormValues({
+            ...formValues,
+            category: eventKey,
+        });
+    };
 
-                <Table
-                  dataSource={getFilteredEvents()}
-                  rowKey="id"
-                  pagination={{
-                    pageSize: 100,
-                  }}
-                >
-                  <Table.Column
-                    key="eventName"
-                    title="Event Name"
-                    dataIndex="eventName"
-                    render={(text, record) => (
-                      <Link to={`/events/${record._id}`}>{text}</Link>
-                    )}
-                  />
-                  <Table.Column
-                    key="eventDate"
-                    title="Event Date"
-                    dataIndex="eventDate"
-                  />
-                  <Table.Column
-                    key="eventLocation"
-                    title="Event Location"
-                    dataIndex="eventLocation"
-                  />
-                  <Table.Column
-                    key="category"
-                    title="Category"
-                    dataIndex="category"
-                  />
-                  <Table.Column
-                    key="createdAt"
-                    title="Date Created"
-                    dataIndex="createdAt"
-                  />
-                  <Table.Column
-                    key="actions"
-                    title="Actions"
-                    render={(text, record) => (
-                      <div>
-                        <Popconfirm title="Are you sure you want to delete this event?" onConfirm={() => handleDeleteEvent(record._id)}>
-                          <Button size="small">
-                            <TbTrash />
-                          </Button>
-                        </Popconfirm>
-                        <Button icon={<TbEdit />} onClick={() => showModal(record)} />
-                      </div>
-                    )}
-                  />
-                </Table>
-                <div className="row justify-content-center">
-                  <div className="col-md-10">
-                    <div className="form-wrapper auth-form">
-                      <Modal className="text-center fs-2"
-                        title={isUpdateMode ? "Update Event" : "Create Event"}
-                        open={isModalVisible}
-                        onCancel={hideModal}
-                        footer={false}
-                        destroyOnClose={true}
-                      >
-                        <Form form={form} layout="vertical" onFinish={handleCreateOrUpdateEvent}>
-                          <Form.Item label="Event Name" name="eventName" rules={[{ required: true, message: 'Please input the event name!' }]}>
-                            <Input />
-                          </Form.Item>
-                          <Form.Item label="Event Date" name="eventDate" rules={[{ required: true, message: 'Please input the event date!' }]}>
-                            <Input type="date" />
-                          </Form.Item>
-                          <Form.Item label="Event Description" name="eventDescription">
-                            <Input.TextArea rows={4} />
-                          </Form.Item>
-                          <Form.Item label="Event Loaction" name="eventLocation" rules={[{ required: true, message: 'Please input the event location!' }]}>
-                            <Input />
-                          </Form.Item>
-                          <Form.Item
-                            name={'category'}
-                            label="Category"
-                            rules={[
-                              {
-                                required: false,
-                                message: 'Please select your category!',
-                              },
-                            ]}
-                          >
-                            <Select placeholder="Select a category">
-                              <Option value="music">Music</Option>
-                              <Option value="sports">Sports</Option>
-                              <Option value="arts">Arts</Option>
-                              <Option value="education">Education</Option>
-                              <Option value="business">Business</Option>
-                            </Select>
-                          </Form.Item>
-                          <Button className="btn-primary w-100 p-3" type="submit" htmlType='submit'>Create Event</Button>
-                        </Form>
-                      </Modal>
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setFormValues({ ...formValues, image: reader.result });
+            };
+            reader.readAsDataURL(file); // This converts the file to a base64 string
+        }
+    };
+
+    const fetchEvents = async () => {
+        try {
+            const result = await getEvents();
+            console.log('result', result);
+            setEvents(result);
+            setTotalEvents(result.length);
+            setLoading(false);
+        } catch (error) {
+            console.error('Error:', error);
+            setLoading(false);
+        }
+    };
+
+    const showModal = (event) => {
+        if (event) {
+            setIsUpdateMode(true);
+            setCurrenteventId(event._id);
+            setFormValues(event);
+            ;
+        } else {
+            setIsUpdateMode(false);
+            setFormValues({
+                eventName: '',
+                eventDescription: '',
+                eventDate: '',
+                eventLocation: '',
+                category: '',
+                image: ''
+            });
+        }
+        setIsModalVisible(true);
+    };
+
+    const hideModal = () => {
+        setIsModalVisible(false);
+        setCurrenteventId(null);
+    };
+
+    const handleSearchChange = (e) => {
+        setSearchQuery(e.target.value);
+    };
+
+    const getFilteredEvents = () => {
+        if (!searchQuery) {
+            return events;
+        }
+        return events.filter((event) =>
+            event.category && event.category.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+    };
+
+    const handleDeleteEvent = (id) => {
+        deleteEvent(id)
+            .then(({ data: result }) => {
+                const event = result;
+                console.log('Deleted event:', event);
+                fetchEvents();
+            })
+            .catch((error) => {
+                console.log('Error deleting event:', error);
+            });
+    };
+
+    const handleCreateOrUpdateUser = async (event) => {
+        event.preventDefault();
+        try {
+            if (isUpdateMode) {
+                await updateEvent(currenteventId, formValues);
+
+            } else {
+                await createEvent(formValues);
+            }
+            hideModal();
+            fetchEvents();
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    return (
+        <Container>
+            <div className="dashboard-page-header p-3">
+                <div className="row">
+                    <div className="col-md-12">
+                        {loading ? (
+                            <p>Loading...</p>
+                        ) : (
+                            <div>
+                                <div className="row mb-3">
+                                    <div className="col-md-8">
+                                        <h3>Total List of Events: {totalEvents}</h3>
+                                    </div>
+
+                                    <div className="col-md-4 d-flex justify-content-end align-items-center">
+                                        <div className="dashboard-actions">
+                                            <Button className="text-end" variant="primary" onClick={() => showModal(null)}>
+                                                <Plus size={18} /> New Events
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="row justify-content-center mb-5">
+                                    <div className="col-md-6 mt-3">
+                                        <div className="input-group">
+                                            <span className="input-group-text"><TbSearch size={25} /></span>
+                                            <input type="text" className="form-control" placeholder="Search Category....." onChange={handleSearchChange} />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <Table striped bordered hover>
+                                    <thead>
+                                        <tr>
+                                            <th>Event Name</th>
+                                            <th>Event Description</th>
+                                            <th>Event Date</th>
+                                            <th>Event Location</th>
+                                            <th>Category</th>
+                                            <th>Date Created</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {getFilteredEvents().map(event => (
+                                            <tr key={event._id}>
+                                                <td><Link to={`/events/${event._id}`}>{event.eventName}</Link></td>
+                                                <td>{event.eventDescription}</td>
+                                                <td>{event.eventDate}</td>
+                                                <td>{event.eventLocation}</td>
+                                                <td>{event.category}</td>
+                                                <td>{event.createdAt}</td>
+                                                <td>
+                                                    <Button variant="danger" size="sm" className="mx-2" onClick={() => handleDeleteEvent(event._id)}>
+                                                        <TbTrash />
+                                                    </Button>
+                                                    <Button variant="secondary" size="sm" onClick={() => showModal(event)}>
+                                                        <TbEdit />
+                                                    </Button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </Table>
+
+                                <div className="row justify-content-center">
+                                    <div className="col-md-10">
+                                        <div className="form-wrapper auth-form">
+                                            <Modal
+                                                show={isModalVisible}
+                                                onHide={hideModal}
+                                                backdrop="static"
+                                                keyboard={false}
+                                            >
+                                                <Form onSubmit={handleCreateOrUpdateUser}>
+                                                    <Modal.Header closeButton>
+                                                        <Modal.Title>{isUpdateMode ? "Update Event" : "Create Event"}</Modal.Title>
+                                                    </Modal.Header>
+                                                    <Modal.Body>
+                                                        <Form.Group className="mb-3">
+                                                            <Form.Label>Event Name</Form.Label>
+                                                            <Form.Control
+                                                                type="text"
+                                                                placeholder="Enter event name"
+                                                                name="eventName"
+                                                                value={formValues.eventName}
+                                                                onChange={handleInputChange}
+                                                                required
+                                                            />
+                                                        </Form.Group>
+                                                        <Form.Group className="mb-3">
+                                                            <Form.Label>Event Description</Form.Label>
+                                                            <Form.Control
+                                                                as="textarea"
+                                                                placeholder="Enter event description"
+                                                                name="eventDescription"
+                                                                value={formValues.eventDescription}
+                                                                onChange={handleInputChange}
+                                                                required
+                                                            />
+                                                        </Form.Group>
+                                                        <Form.Group className="mb-3">
+                                                            <Form.Label>Event Date</Form.Label>
+                                                            <Form.Control
+                                                                type="date"
+                                                                name="eventDate"
+                                                                onChange={handleInputChange}
+                                                                required
+                                                            />
+                                                        </Form.Group>
+                                                        <Form.Group className="mb-3">
+                                                            <Form.Label>Event Location</Form.Label>
+                                                            <Form.Control
+                                                                type="text"
+                                                                placeholder="Enter event location"
+                                                                name="eventLocation"
+                                                                value={formValues.eventLocation}
+                                                                onChange={handleInputChange}
+                                                                required
+                                                            />
+                                                        </Form.Group>
+                                                        <Form.Group className="mb-3">
+                                                            <Form.Label>Profile Image</Form.Label>
+                                                            <Form.Control
+                                                                type="file"
+                                                                onChange={handleFileChange}
+                                                                required
+                                                            />
+                                                        </Form.Group>
+                                                        <Form.Group className="mb-3">
+                                                            <Form.Label>Category</Form.Label>
+                                                            <InputGroup>
+                                                                <DropdownButton
+                                                                    variant="outline-secondary"
+                                                                    title={formValues.category || "Select category"}
+                                                                    onSelect={handleCategoryChange}
+                                                                >
+                                                                    <Dropdown.Item eventKey="music">Music</Dropdown.Item>
+                                                                    <Dropdown.Item eventKey="sports">Sports</Dropdown.Item>
+                                                                    <Dropdown.Item eventKey="arts">Arts</Dropdown.Item>
+                                                                    <Dropdown.Item eventKey="education">Education</Dropdown.Item>
+                                                                    <Dropdown.Item eventKey="business">Business</Dropdown.Item>
+                                                                </DropdownButton>
+                                                            </InputGroup>
+                                                        </Form.Group>
+                                                    </Modal.Body>
+                                                    <Modal.Footer>
+                                                        <Button variant="secondary" onClick={hideModal}>
+                                                            Cancel
+                                                        </Button>
+                                                        <Button variant="primary" type="submit">
+                                                            {isUpdateMode ? "Update" : "Create"}
+                                                        </Button>
+                                                    </Modal.Footer>
+                                                </Form>
+                                            </Modal>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </div>
-                  </div>
                 </div>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-    </Container>
-  )
+            </div>
+        </Container>
+    );
 }
-
-// const eventsData = [
-//   { id: 1, name: 'Music Concert', category: 'Music' },
-//   { id: 2, name: 'Football Match', category: 'Sports' },
-//   { id: 3, name: 'Art Exhibition', category: 'Art' },
-//   { id: 4, name: 'Basketball Game', category: 'Sports' },
-//   { id: 5, name: 'Classical Music', category: 'Music' },
-// ];
-
-// const UserProfile = () => {
-//   const [events, setEvents] = useState(eventsData);
-//   const [searchQuery, setSearchQuery] = useState('');
-
-//   const handleSearchChange = (e) => {
-//       setSearchQuery(e.target.value);
-//   };
-
-//   const getFilteredEvents = () => {
-//       return events.filter(event =>
-//           event.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-//           event.category.toLowerCase().includes(searchQuery.toLowerCase())
-//       );
-//   };
-
-//   return (
-//       <div>
-//           <h1>Event Management</h1>
-//           <div>
-//               <input
-//                   type="text"
-//                   placeholder="Search events..."
-//                   value={searchQuery}
-//                   onChange={handleSearchChange}
-//               />
-//           </div>
-//           <div>
-//               <h2>Events:</h2>
-//               <ul>
-//                   {getFilteredEvents().map(event => (
-//                       <li key={event.id}>{event.name} - {event.category}</li>
-//                   ))}
-//               </ul>
-//           </div>
-//       </div>
-//   );
-// };
-
-

@@ -1,51 +1,64 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { getEventsById } from '../services/api.service';
-import { Card, Descriptions } from 'antd';
+import { Card, Table } from 'react-bootstrap';
 
 const EventProfile = () => {
     const params = useParams();
     const eventId = params.eventId;
-    console.log('id-----------', eventId);
     const [event, setEvent] = useState(null);
-    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchSingleEvent = async () => {
             try {
                 const result = await getEventsById(eventId);
-                console.log('Fetched Single Events:', result);
+                console.log(result);
                 setEvent(result);
-                setLoading(false);
             } catch (error) {
-                console.error('Error setting events:', error);
-                setLoading(false);
+                console.error(error);
             }
         };
 
         fetchSingleEvent();
     }, [eventId]);
 
-
     return (
         <div className="p-5">
-            <Card title="event info">
-                <Descriptions>
-                    <Descriptions.Item label="Event Name">{event?.eventName}</Descriptions.Item>
-                    <Descriptions.Item label="Event Description">{event?.eventDescription}</Descriptions.Item>
-                    <Descriptions.Item label="Event Date">{event?.eventDate}</Descriptions.Item>
-                    <Descriptions.Item label="Event Location">{event?.eventLocation}</Descriptions.Item>
-                    <Descriptions.Item label="Category">{event?.category}</Descriptions.Item>
-                    <Descriptions.Item label="Created At">
-                        {event?.createdAt}
-                    </Descriptions.Item>
-                </Descriptions>
+            <Card>
+                <Card.Header>Event info</Card.Header>
+                <Card.Body>
+                    <Table striped bordered hover>
+                        <tbody>
+                            <tr>
+                                <td><strong>Event Name</strong></td>
+                                <td>{event?.eventName}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Event Description</strong></td>
+                                <td>{event?.eventDescription}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Event Date</strong></td>
+                                <td>{event?.eventDate}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Event Location</strong></td>
+                                <td>{event?.eventLocation}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Category</strong></td>
+                                <td>{event?.category}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Created At</strong></td>
+                                <td>{event?.createdAt}</td>
+                            </tr>
+                        </tbody>
+                    </Table>
+                </Card.Body>
             </Card>
         </div>
-
     );
-
 };
 
 export default EventProfile;

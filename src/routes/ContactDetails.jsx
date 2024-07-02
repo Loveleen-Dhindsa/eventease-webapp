@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getSingleContact } from '../services/api.service';
-import { Card, Descriptions } from 'antd';
+import { Card, Table } from 'react-bootstrap';
 
 export default function ContactDetails() {
     const params = useParams();
     const contactId = params.contactId;
     const [contact, setContact] = useState(null);
-    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchSingleContact = async () => {
@@ -15,27 +14,44 @@ export default function ContactDetails() {
                 const result = await getSingleContact(contactId);
                 console.log('Fetched Single contact:', result);
                 setContact(result);
-                setLoading(false);
             } catch (error) {
                 console.error('Error setting contact:', error);
-                setLoading(false);
             }
         };
 
         fetchSingleContact();
     }, [contactId]);
+
     return (
         <div className="p-5">
-            <Card title="Contact info">
-                <Descriptions>
-                    <Descriptions.Item label="Name">{contact?.name}</Descriptions.Item>
-                    <Descriptions.Item label="Email">{contact?.email}</Descriptions.Item>
-                    <Descriptions.Item label="Message">{contact?.message}</Descriptions.Item>
-                    <Descriptions.Item label="Phone">{contact?.phone}</Descriptions.Item>
-                    <Descriptions.Item label="Created At">
-                        {contact?.createdAt}
-                    </Descriptions.Item>
-                </Descriptions>
+            <Card>
+                <Card.Header>Contact info</Card.Header>
+                <Card.Body>
+                    <Table striped bordered hover>
+                        <tbody>
+                            <tr>
+                                <td><strong>Name</strong></td>
+                                <td>{contact?.name}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Email</strong></td>
+                                <td>{contact?.email}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Message</strong></td>
+                                <td>{contact?.message}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Phone</strong></td>
+                                <td>{contact?.phone}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Created At</strong></td>
+                                <td>{contact?.createdAt}</td>
+                            </tr>
+                        </tbody>
+                    </Table>
+                </Card.Body>
             </Card>
         </div>
     )
