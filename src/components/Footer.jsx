@@ -5,9 +5,6 @@ import fablogo from "../assets/fablogo.jpeg";
 import locationImg from "../assets/location_img.png";
 import emaillogo from "../assets/emaillogo.jpg";
 import phoneLogo from "../assets/phoneLogo.png";
-import { Form, Input, Button, Row, Col, Select, Alert } from 'antd';
-
-
 import "./footer.css";
 import { Link } from "react-router-dom";
 const Footer = () => {
@@ -123,10 +120,6 @@ const Footer = () => {
               <div className="col-xl-6 col-lg-6 d-none d-lg-block text-right">
                 <div className="footer-menu">
                   <ul>
-                    {/* <li><a href="1">Terms</a></li>
-                                <li><a href="1">Privacy</a></li>
-                                <li><a href="1">Policy</a></li>
-                                <li><a href="1">Contact</a></li> */}
                   </ul>
                 </div>
               </div>

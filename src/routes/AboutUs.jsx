@@ -1,82 +1,56 @@
 import React from 'react'
 
-export default function
-    () {
+export default function AboutUs() {
     return (
-        <div className="about-us-section">
-            {/* <div className="container py-3">
-                <div className="row">
-                    <div className="col-md-12">
-                        <h1 className="text-center">
-                            About us
-                        </h1>
-                        <p className="fs-5 mt-3">
-                            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Molestiae excepturi non enim perspiciatis eveniet ipsa exercitationem deserunt rem, neque eum qui consectetur laborum nesciunt, quia vitae natus aliquid optio modi repellendus culpa provident ad tenetur tempora? Ea asperiores ad repudiandae temporibus tempora error, ut praesentium, enim delectus id officia autem reiciendis! Illo quasi repellendus iusto perspiciatis consequuntur totam, nam voluptate suscipit eum excepturi voluptatem laborum eos nulla et deserunt vel praesentium nemo culpa itaque beatae quam. Dolorem aperiam officiis aspernatur molestiae. Cupiditate qui temporibus ducimus alias at sint rerum aliquid iure harum, corrupti aspernatur vitae laborum laudantium distinctio amet, nobis illo sed ab aut aliquam. Incidunt in totam molestiae eaque quo, nihil hic enim praesentium laudantium sit, corporis, ducimus officia perspiciatis modi quis quibusdam ratione atque aut natus qui reprehenderit! Sequi vero et similique perferendis dolor? Possimus ipsam illum nostrum omnis! Molestias natus mollitia non a dolores placeat aperiam, doloremque neque unde ab vitae praesentium, excepturi saepe repudiandae reiciendis quae quasi veniam id exercitationem. Id veritatis reiciendis saepe voluptates placeat sed sequi molestiae assumenda ullam aliquam doloribus dicta cupiditate porro, tempora consequuntur perferendis facere ea dolores dolore in odit doloremque eaque. Repellat consequuntur libero et assumenda sed voluptatem! Accusantium labore assumenda autem amet id aliquid eos minima iste harum aliquam voluptates nisi eum quibusdam, ipsam exercitationem aspernatur repellendus pariatur inventore error soluta perferendis eius et vitae dolorem? Libero tenetur exercitationem neque, voluptas aperiam consequatur sint nulla, voluptatum corrupti itaque eos mollitia explicabo culpa aut, impedit provident aspernatur doloremque soluta illo perspiciatis! Quo eius fugit laboriosam nisi amet nam odit ullam quod vitae reprehenderit velit ad voluptatem, corrupti neque nobis error quos facere at quis voluptatum rem nemo optio exercitationem. Iste dignissimos pariatur officia doloribus laborum iusto ipsum labore ipsam saepe voluptate, voluptatum quod tenetur perferendis blanditiis natus est. Reiciendis adipisci error assumenda quasi qui nihil beatae quis eaque atque, incidunt sit amet officiis omnis non dolorum deserunt aperiam. Accusamus quas eaque cupiditate porro quod possimus voluptatibus ea tenetur voluptatem? Sapiente, dolores! Nulla voluptates nesciunt nostrum nemo doloribus quis ut inventore. Modi, velit excepturi ratione iste, esse nemo assumenda pariatur ducimus sapiente ipsa delectus natus aut, explicabo similique labore cum reprehenderit sit ullam blanditiis necessitatibus minus voluptatibus ad? In possimus sint modi voluptates autem ratione velit, nemo iste voluptatum eos illum facere similique molestias. Corporis ab corrupti molestiae eveniet beatae itaque amet enim totam explicabo ipsam, repellat incidunt non deserunt quis cupiditate ullam odit consectetur quaerat fuga animi ipsum, iusto voluptatum modi officiis. Alias animi accusantium architecto reiciendis! Corporis dolore rerum natus. Molestiae molestias provident, necessitatibus inventore delectus qui expedita in quisquam nostrum dignissimos laudantium. Culpa consequatur ipsa impedit ratione similique perferendis tempora magni, doloribus ipsum illo expedita unde fuga commodi, sit eos quibusdam. Laboriosam tempore consequatur suscipit nesciunt provident omnis perspiciatis optio rerum, reiciendis, culpa a! Modi ipsa maiores dolor id quae accusantium ipsum veritatis, ipsam natus tempore ex voluptatum consectetur minus odit quo aspernatur? Officiis tenetur fuga quam ratione fugit architecto iusto quasi sed suscipit ad. Neque, facilis ipsam.
-                            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Doloremque impedit laborum natus ad sint hic debitis molestias magni vero ut? Voluptates in et amet esse sit corrupti veniam, aliquam veritatis dolorum praesentium nulla ullam quasi, minima doloremque omnis necessitatibus quisquam voluptatem maxime. Esse maxime adipisci saepe ducimus quis necessitatibus hic.
-
-                        </p>
-
-                    </div>
+        <div className="container py-5">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <h1>About Eventease</h1>
+                    <p class="lead">Welcome to Eventease, your ultimate destination for seamless event planning and management!</p>
                 </div>
-            </div> */}
-            <div className="container">
-                <h1 className="mt-5 mb-5 text-center">About Us</h1>
-                <section className="mb-5">
-                    <h2>Company Overview</h2>
-                    <p>
-                        Our company, XYZ Inc., is dedicated to providing top-notch services and products to our customers. Founded in 2010, we have consistently strived to innovate and improve our offerings to meet the needs of a dynamic market.
-                    </p>
-                </section>
-                <section className="mb-5">
-                    <h2>Mission Statement</h2>
-                    <p>
-                        Our mission is to empower individuals and businesses by delivering high-quality solutions that foster growth, efficiency, and success.
-                    </p>
-                </section>
-                <section className="mb-5">
-                    <h2>History</h2>
-                    <p>
-                        XYZ Inc. started as a small startup in a garage. Over the years, we have grown into a global leader in our industry, with a presence in over 20 countries and a diverse team of professionals.
-                    </p>
-                </section>
-                <section className="mb-5">
-                    <h2>Our Team</h2>
-                    <p>
-                        Our team consists of passionate, dedicated professionals who are experts in their fields. From our engineers to our customer support staff, every team member plays a crucial role in our success.
-                    </p>
-                    <ul>
-                        <li><strong>John Doe</strong> - CEO</li>
-                        <li><strong>Jane Smith</strong> - CTO</li>
-                        <li><strong>Emily Johnson</strong> - COO</li>
-                        {/* Add more team members as needed */}
-                    </ul>
-                </section>
-                <section className="mb-5">
-                    <h2>Achievements</h2>
-                    <p>
-                        We are proud of our achievements, which include numerous awards for innovation, customer satisfaction, and industry leadership. Our milestones are a testament to our commitment to excellence.
-                    </p>
-                    <ul>
-                        <li>Best Startup of the Year - 2012</li>
-                        <li>Innovation in Technology Award - 2015</li>
-                        <li>Customer Choice Award - 2018</li>
-                        {/* Add more achievements as needed */}
-                    </ul>
-                </section>
-                <section className="mb-5">
-                    <h2>Contact Us</h2>
-                    <p>
-                        We'd love to hear from you! Feel free to reach out to us at:
-                    </p>
-                    <address>
-                        <strong>XYZ Inc.</strong><br />
-                        123 Main Street<br />
-                        Anytown, USA 12345<br />
-                        <a href="mailto:info@xyz.com">info@xyz.com</a>
-                    </address>
-                </section>
             </div>
-
+            <div class="row mt-4">
+                <div class="col-12">
+                    <h2>Our Mission</h2>
+                    <p>At Eventease, we strive to transform your vision into reality. Whether you are organizing a corporate event, a wedding, a birthday party, or any other special occasion, our mission is to make the planning process effortless and enjoyable. We believe that every event is unique, and we are committed to providing personalized services tailored to your specific needs.</p>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-12">
+                    <h2>Who We Are</h2>
+                    <p>Eventease was founded with a passion for creating memorable experiences. Our team is comprised of seasoned event planners, creative designers, and logistical experts who bring years of experience and a wealth of knowledge to the table. We pride ourselves on our attention to detail, innovative ideas, and commitment to excellence.</p>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-12">
+                    <h2>What We Do</h2>
+                    <ul class="list-unstyled mt-2">
+                        <li className="mb-1"><strong>Event Planning:</strong> From concept to execution, we handle every aspect of your event to ensure it runs smoothly.</li>
+                        <li className="mb-1"><strong>Venue Selection:</strong> We help you find the perfect venue that aligns with your vision and budget.</li>
+                        <li className="mb-1"><strong>Design & Decor:</strong> Our creative team transforms spaces with stunning decor that reflects your style and theme.</li>
+                        <li className="mb-1"><strong>Catering Services:</strong> Delicious and customized catering options to suit your event's needs.</li>
+                        <li className="mb-1"><strong>Entertainment & Activities:</strong> We provide a variety of entertainment options to keep your guests engaged and entertained.</li>
+                        <li className="mb-1"><strong>Logistics Management:</strong> Seamless coordination of all logistics, including transportation, accommodations, and scheduling.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-12">
+                    <h2>Why Choose Eventease?</h2>
+                    <ul class="list-unstyled">
+                        <li className="mb-1"><strong>Personalized Approach:</strong> We understand that no two events are the same, and we tailor our services to meet your specific requirements.</li>
+                        <li className="mb-1"><strong>Expert Team:</strong> Our team of professionals brings expertise, creativity, and a passion for perfection to every project.</li>
+                        <li className="mb-1"><strong>Stress-Free Planning:</strong> We handle the details, so you can enjoy the experience without the hassle.</li>
+                        <li className="mb-1"><strong>Quality Assurance:</strong> We are committed to delivering exceptional service and exceeding your expectations.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-12">
+                    <h2>Our Commitment to You</h2>
+                    <p>At Eventease, we are dedicated to making your event a success. We listen to your needs, work within your budget, and go above and beyond to create an unforgettable experience. Your satisfaction is our top priority, and we are here to support you every step of the way.</p>
+                </div>
+            </div>
         </div>
     )
 }

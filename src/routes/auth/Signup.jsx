@@ -1,33 +1,43 @@
 import React, { useState } from 'react'
 import { signupApi } from '../../services/api.service';
-import { Button, Form, Input, Alert } from 'antd';
+import { Form, Button, Alert } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import { setAccessToken, saveUserToLocalstorage } from '../../services/localstorage';
 
 export default function Signup() {
+    const [user, setUser] = useState({
+        name: '',
+        email: '',
+        password: '',
+        phone: ''
+    });
+
     const [message, setMessage] = useState(null);
-    const [user, setUser] = useState(null);
     const navigate = useNavigate();
 
-    const handleSubmit = (values) => {
-        signupApi({
-            name: values.name,
-            email: values.email,
-            password: values.password,
-            phone: values.phone
-        })
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setUser((prevUser) => ({
+            ...prevUser,
+            [name]: value
+        }));
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        signupApi(user)
             .then((response) => {
-                console.log('Response:', response);
                 const user = response;
                 if (user) {
                     setAccessToken(user.token);
-                    setUser(user);
                     saveUserToLocalstorage(user);
                     navigate('/');
                 }
                 setMessage({ type: 'success', content: 'Signup successful!' });
-            }).catch((error) => {
-                console.log('error', error)
+            })
+            .catch((error) => {
+                console.log('error', error);
                 setMessage({ type: 'error', content: 'Email address is already registered with us.' });
             });
     };
@@ -37,75 +47,76 @@ export default function Signup() {
                 <div className="container py-5">
                     <div className="row justify-content-center">
                         <div className="col-lg-5">
-                            <div className="form-wrapper auth-form bg-light mt-3 p-5">
-                                <Form layout="vertical" onFinish={handleSubmit}>
+                            <div className="form-wrapper auth-form bg-light mt-2 p-3">
+                                <Form onSubmit={handleSubmit} className="p-4">
                                     <h3>Create a new Account</h3>
                                     <hr />
                                     {message && (
-                                        <Alert
-                                            message={message.content}
-                                            type={message.type}
-                                            showIcon
-                                            className="mb-3"
-                                        />
+                                        <Alert variant={message.type} className="mb-3">
+                                            {message.content}
+                                        </Alert>
                                     )}
-                                    <Form.Item
-                                        name={'name'}
-                                        label="Name"
-                                        rules={[
-                                            {
-                                                required: true,
-                                                message: 'Please input your name!',
-                                            },
-                                        ]}
-                                        required={false}
-                                    >
-                                        <Input placeholder="Tony Stark" autoComplete='off' />
-                                    </Form.Item>
 
-                                    <Form.Item
-                                        name={'email'}
-                                        label="Email"
-                                        rules={[
-                                            { required: true, message: 'Please input your email!' },
-                                            { type: 'email', message: 'Please enter a valid email address.' },
-                                        ]}
-                                        required={false}
-                                    >
-                                        <Input placeholder="tony@starkindustries.com" autoComplete='off' />
-                                    </Form.Item>
+                                    <Form.Group controlId="name" className="mt-3">
+                                        <Form.Label>Name</Form.Label>
+                                        <Form.Control
+                                            type="text"
+                                            name="name"
+                                            placeholder="abc"
+                                            required
+                                            value={user.name}
+                                            onChange={handleChange}
+                                        />
+                                    </Form.Group>
 
-                                    <Form.Item
-                                        name={'password'}
-                                        label="Password"
-                                        required={false}
-                                        rules={[
-                                            { required: true, message: 'Please input your password!' },
-                                            { min: 6, message: 'Password must be at least 6 characters' },
-                                        ]}
-                                    >
-                                        <Input.Password placeholder="*******" type="password" />
-                                    </Form.Item>
-                                    <Form.Item
-                                        name={'phone'}
-                                        label="Phone"
-                                        required={false}
-                                        rules={[
-                                            { required: true, message: 'Please input your phone number!' },
-                                            { pattern: /^[0-9]{10}$/, message: 'Please enter a valid 10-digit phone number.' },
-                                        ]}
-                                    >
-                                        <Input placeholder="1234567890" autoComplete="off" />
-                                    </Form.Item>
+                                    <Form.Group controlId="email" className="mt-3">
+                                        <Form.Label>Email</Form.Label>
+                                        <Form.Control
+                                            type="email"
+                                            name="email"
+                                            placeholder="abc@gmail.com"
+                                            required
+                                            value={user.email}
+                                            onChange={handleChange}
+                                        />
+                                    </Form.Group>
 
-                                    <Button className="btn-primary w-100 p-3" type="submit" htmlType='submit'>Create Account</Button>
+                                    <Form.Group controlId="password" className="mt-3">
+                                        <Form.Label>Password</Form.Label>
+                                        <Form.Control
+                                            type="password"
+                                            name="password"
+                                            placeholder="*******"
+                                            required
+                                            minLength={6}
+                                            value={user.password}
+                                            onChange={handleChange}
+                                        />
+                                    </Form.Group>
+
+                                    <Form.Group controlId="phone" className="mt-3">
+                                        <Form.Label>Phone</Form.Label>
+                                        <Form.Control
+                                            type="tel"
+                                            name="phone"
+                                            placeholder="1234567890"
+                                            required
+                                            pattern="[0-9]{10}"
+                                            value={user.phone}
+                                            onChange={handleChange}
+                                        />
+                                    </Form.Group>
+
+                                    <Button className="btn-primary w-100 p-2 mt-3" type="submit">
+                                        Create Account
+                                    </Button>
+                                    <p className="account-link mt-3">
+                                        Already have an account? <Link className="text-decoration-none" to="/auth/login">Login</Link>
+                                    </p>
                                 </Form>
-                                <p className="mt-4 account-link">
-                                    Already have an account? <Link className="text-decoration-none" to="/auth/login">Login</Link>
-                                </p>
+
                             </div>
                         </div>
-
                     </div>
                 </div>
             </section>

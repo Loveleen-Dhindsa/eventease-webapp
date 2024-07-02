@@ -1,6 +1,6 @@
 import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
-import { getAccessToken, getUserFromLocalstorage } from '../../services/localstorage'; // Assume you have these functions
+import { getAccessToken, getUserFromLocalstorage } from '../../services/localstorage';
 import { Layout } from 'antd';
 
 const { Content } = Layout;

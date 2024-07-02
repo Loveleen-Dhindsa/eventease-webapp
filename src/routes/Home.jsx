@@ -1,28 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-// import "./Home.css";
-import EventList from './EventList';
 import { getUpcomingEvents } from '../services/api.service';
-import { Card, List, Typography, Col, Row } from 'antd';
 import LatestEvent from './LatestEvent';
 import UpcomingEvent from './UpcomingEvent';
 
 const Home = () => {
-    const [upcomingEvents, setUpcomingEvents] = useState([]);
-    const [totalUpcomingEvents, setTotalUpcomingEvents] = useState([])
-    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchUpcomingEvents = async () => {
             try {
                 const result = await getUpcomingEvents();
                 console.log('result', result);
-                setUpcomingEvents(result);
-                setTotalUpcomingEvents(result.length);
-                setLoading(false);
             } catch (error) {
                 console.error('Error:', error);
-                setLoading(false);
             }
         };
         fetchUpcomingEvents();
@@ -31,57 +21,38 @@ const Home = () => {
     return (
         <div className="home-section">
             <div className="dashboard-header">
-                <img
-                    src="/images/event-page.png"
-                    alt="Event Management System"
-                    className="dashboard-image w-100 vh-20"
-                />
+                <div className="dashboard mx-auto text-center">
+                    <h1 className="text-capitalize fw-bold mb-3">
+                        Welcome to Eventease
+                    </h1>
+                    <p className="dashboard-lead fw-light max-w-25">
+                        At Eventease, we turn your event dreams into reality. Whether you’re planning a corporate gala, a wedding, a birthday bash, or any special occasion, we are here to make the process seamless and stress-free.
+                    </p>
+                    <button className="dashboard-button">
+                        <Link to={"/about-us"} className="text-decoration-none dashboard-link">
+                            About Us
+                        </Link>
+                    </button>
+
+                </div>
             </div>
             <div className="container mt-5">
                 <div className="row">
                     <div className="col-md-12">
                         <div className="mx-auto text-center">
-                            <h1 className="text-capitalize fw-bold mb-3">
-                                Welcome to Event Management System
-                            </h1>
-                            <p className="lead source fw-light">
-                                Welcome to the ultimate platform for managing and attending events effortlessly. Whether you're an organizer planning a grand conference or a participant looking for exciting events to attend, our Event Management System has everything you need.
-                            </p>
 
-                            <div className="row mt-5 mb-5 text-center">
+                            <div className="row mb-5 text-center">
                                 <LatestEvent />
                             </div>
 
                             <div className="row mt-5 mb-5 text-center">
                                 <UpcomingEvent />
                             </div>
-                            {/* <div className="space mt-5 text-center mb-5">
-                                <div className="upcoming-events-container">
-                                    <h2 className="mb-5">Upcoming Events</h2>
-                                    <Row gutter={16}>
-                                        {upcomingEvents.map((event) => (
-                                            <Col span={8}>
-                                                <Card>
 
-                                                    <h5 className="card-title">{event.eventName}</h5>
-                                                    <p className="card-text">{event.eventDescription}</p>
-                                                    <p className="card-text">{event.eventLocation}</p>
-                                                    <p className="card-text">Date: {event.eventDate}</p>
-
-                                                </Card>
-                                            </Col>
-                                        ))}
-                                    </Row>
-                                </div>
-
-                            </div> */}
                         </div>
                     </div>
                 </div>
             </div>
-            {/* <h1 className="text-center mt-5">Welcome to Event Management System</h1>
-            <p className="">Manage and attend events seamlessly.</p>
-            <Link to="/event-lists">View Events</Link> */}
         </div>
     );
 };

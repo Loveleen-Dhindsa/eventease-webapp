@@ -1,10 +1,51 @@
 .App {
   text-align: center;
+  font-family: 'Courier New', Courier, monospace;
+  background-color: aqua;
+
 }
 
 .App-logo {
   height: 40vmin;
   pointer-events: none;
+}
+
+.dashboard-header {
+  background: linear-gradient(204deg, rgba(70, 11, 31, 1) 1%, rgba(18, 12, 60, 1) 40%, rgba(77, 14, 77, 1) 90%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+}
+
+.dashboard {
+  padding: 0 15px;
+  position: relative;
+  text-align: center;
+}
+
+.dashboard-lead {
+  max-width: 80%;
+  margin: 0 auto;
+  font-weight: 700;
+  font-size: 20px;
+}
+
+.dashboard-button {
+  background-color: #fff;
+  border-radius: 30px;
+  width: fit-content;
+  padding: 16px 20px;
+  color: #000;
+  margin-top: 20px;
+  font-size: 15px;
+  line-height: 1.1;
+  font-weight: 600;
+}
+
+.dashboard-link {
+  color: #000;
+
 }
 
 .contact-title-section {
@@ -23,6 +64,61 @@
 .lead {
   font-size: 20px;
   line-height: 1.5;
+}
+
+.circle-image {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.circle-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.card-custom {
+  height: 350px;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.card-img-top {
+  height: 200px;
+  object-fit: cover;
+}
+
+.card-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.event-button {
+  background-color: #6c757d;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.event-button:hover {
+  background-color: #495057;
+}
+
+
+.latest-event-img {
+  max-height: 300px;
+  object-fit: cover;
 }
 
 @media (prefers-reduced-motion: no-preference) {

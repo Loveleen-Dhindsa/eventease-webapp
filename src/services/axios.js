@@ -8,9 +8,10 @@ axios.defaults.baseURL =
 axios.interceptors.request.use(
   (config) => {
     try {
-      config.headers = {
-        "access-token": getAccessToken(),
-      };
+      const token = getAccessToken();
+      if (token) {
+        config.headers.authorization = `Bearer ${token}`;
+      }
     } catch (error) {
       console.log("Auth Token is not supported");
     }
