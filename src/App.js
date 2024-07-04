@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import Signup from './routes/auth/Signup';
 import Login from './routes/auth/Login';
 import EventList from './routes/EventList';
@@ -21,6 +21,8 @@ import MainLayout from './components/layouts/MainLayout';
 function App() {
   const [user, setUser] = useState(null);
   const [userLoaded, setUserLoaded] = useState(false);
+  const location = useLocation();
+
   useEffect(() => {
     const token = getAccessToken();
     const userData = getUserFromLocalstorage();
@@ -31,11 +33,15 @@ function App() {
     setUserLoaded(true);
   }, []);
 
+  const authRoutes = ['/auth/login', '/auth/signup'];
+
   return (
     <div className="app">
-      <div className="nav-section">
-        <Navbar />
-      </div>
+      {!authRoutes.includes(location.pathname) && (
+        <div className="nav-section">
+          <Navbar />
+        </div>
+      )}
 
       {userLoaded ? (
         <Routes>
@@ -58,11 +64,13 @@ function App() {
       ) : (
         <div>Loading...</div>
       )}
-      <div className="footer-section">
-        <Footer />
-      </div>
-    </div>
 
+      {!authRoutes.includes(location.pathname) && (
+        <div className="footer-section">
+          <Footer />
+        </div>
+      )}
+    </div>
   );
 }
 
