@@ -4,6 +4,8 @@ import { TbTrash, TbEdit, TbPlus } from 'react-icons/tb';
 import { Container, Button, Form, Modal, Table, InputGroup, DropdownButton, Dropdown } from "react-bootstrap";
 import { createUser, deleteSingleUser, getUsers, updateUser } from '../services/api.service';
 import { clearAccessToken, clearUserFromLocalstorage } from '../services/localstorage';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 export default function Dashboard() {
     const [users, setUsers] = useState([]);
@@ -106,6 +108,23 @@ export default function Dashboard() {
         window.location.href = '/login';
     };
 
+    const downloadPDF = () => {
+        const doc = new jsPDF();
+        const columns = ["Name", "Role", "Email", "Date Created"];
+        const rows = users.map(user => [
+            user.name,
+            user.role,
+            user.email,
+            user.createdAt
+        ]);
+        doc.autoTable({
+            head: [columns],
+            body: rows,
+        });
+
+        doc.save('users.pdf');
+    };
+
     return (
         <Container>
             <div className="dashboard-page-header p-3">
@@ -124,6 +143,9 @@ export default function Dashboard() {
                                         <div className="d-flex justify-content-end">
                                             <Button className="mx-2 justify-content-end" variant="primary" onClick={() => showModal(null)}>
                                                 <TbPlus /> New User
+                                            </Button>
+                                            <Button variant="success" onClick={downloadPDF}>
+                                                Download PDF
                                             </Button>
                                             <Button
                                                 type="text"
