@@ -25,7 +25,7 @@ const Navbar = () => {
       <nav className="navbar navbar-expand-lg navbar-dark bg-black">
         <div className="container-fluid">
           <a className="navbar-brand" href="/">
-            <img src={logo} alt="" className="App-logo" style={{ height: "4rem", width: "10rem" }} />
+            <img src={logo} alt="" className="App-logo navbar-logo" />
           </a>
           <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span className="navbar-toggler-icon"></span>
