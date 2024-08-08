@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getEventsById } from '../services/api.service';
 
-
 const EventProfile = () => {
     const params = useParams();
     const eventId = params.eventId;
@@ -12,6 +11,7 @@ const EventProfile = () => {
         const fetchSingleEvent = async () => {
             try {
                 const result = await getEventsById(eventId);
+                console.log('result----------', result)
                 console.log('Fetched Single Events:', result);
                 setEvent(result);
             } catch (error) {

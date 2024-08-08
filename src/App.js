@@ -17,6 +17,7 @@ import UpcomingEvent from './routes/UpcomingEvent';
 import SettingsPage from './routes/SettingsPage';
 import { getAccessToken, getUserFromLocalstorage } from './services/localstorage';
 import MainLayout from './components/layouts/MainLayout';
+import BookingForm from './routes/BookingForm';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -51,6 +52,7 @@ function App() {
             <Route path="/events/:eventId" element={<EventProfile />} />
             <Route path="/contact-us" element={<ContactUs />} />
             <Route path="/feedback" element={<Feedback />} />
+            <Route path="/bookings" element={<BookingForm />} />
             <Route path="/about-us" element={<AboutUs />} />
             <Route path="/thank-you" element={<Thankyou />} />
             <Route path="/latest" element={<LatestEvent />} />

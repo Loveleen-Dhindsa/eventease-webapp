@@ -95,3 +95,10 @@ export const updateAccount = async (body) => {
     return response.data;
   });
 };
+
+export const createBooking = async (body) => {
+  console.log('body---------', body)
+  return axios.post('/bookings', body).then(({ data: response }) => {
+    return response.data;
+  });
+};
